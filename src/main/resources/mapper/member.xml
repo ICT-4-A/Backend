@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--여기서 namespace는 @Mapper를 지정한 Interface인 즉 패키지포함해서 MemoDao를 작성해야 함--> 
+<mapper namespace="kr.co.ictedu.myictstudy.dao.MemberDao">
+	<insert id="insertMember" parameterType="mem">
+	INSERT INTO member (num,userid,email,PASSWORD,NAME,regdate) 
+	VALUES (gallery_seq.NEXTVAL, #{userid},#{email}, #{password}, #{name}, sysdate)
+	</insert>
+	
+	<select id="countByEmail" parameterType="String" resultType="int">
+	select count(*) from member where email = #{email}
+	
+	</select>
+	
+	
+</mapper> 
+
+
+
+
+
+
+
+
