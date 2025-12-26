@@ -16,6 +16,9 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
+src/main/resources/application.properties
+src/main/java/MovieApplicaion.java
+
 
 ### IntelliJ IDEA ###
 .idea

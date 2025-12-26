@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.ictedu.movie.board.BoardDao">
+	<insert id="add" parameterType="bvo">
+		insert into board
+		values(board_seq.nextVal,#{title},#{nickname},#{content},0,#{reip},sysdate)
+	</insert>
+	
+	<select id="list" resultType="bvo" parameterType="map">
+	SELECT num,title,nickname,content,hit,reip,bdate,row_num FROM(
+	SELECT num,title,nickname,content,hit,reip,bdate, ROW_NUMBER() OVER(ORDER BY num desc) AS row_num FROM BOARD
+	<if test="searchType != null and searchValue != null">
+	<where>
+	<choose>
+	<when test="searchType == 1">
+	nickname like '%'|| #{searchValue} ||'%'
+	</when>
+	<when test="searchType == 2">
+	title like '%'|| #{searchValue} ||'%'
+	</when>
+	<when test="searchType == 3">
+	content like '%'|| #{searchValue} ||'%'
+	</when>
+	</choose>
+	</where>
+	</if>
+) numbered_rows WHERE row_num BETWEEN #{begin} AND #{end}
+	</select>
+	<select id="totalCount" resultType="int" parameterType="map">
+		select count(*) cnt from board
+		<if test="searchType != null and searchValue != null">
+		<where>
+	<choose>
+	<when test="searchType == 1">
+	nickname like '%'|| #{searchValue} ||'%'
+	</when>
+	<when test="searchType == 2">
+	title like '%'|| #{searchValue} ||'%'
+	</when>
+	<when test="searchType == 3">
+	content like '%'|| #{searchValue} ||'%'
+	</when>
+	</choose>
+	</where>
+		</if>
+	</select>
+	
+	<update id="hit" parameterType="int">
+		update board set hit=hit+1 where num=#{num}
+	</update>
+	<select id="detail" parameterType="int" resultType="bvo">
+		select * from board where num=#{num}
+	</select>
+	<delete id="delete" parameterType="int">
+		delete from board where num=#{num}
+	</delete>
+</mapper>
