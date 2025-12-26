@@ -55,7 +55,6 @@ public class SurveyController {
 		List<SurveyVO> list = surveyService.getSurveyList();
 	    return ResponseEntity.ok(list);
 	}
-
 	
 	@GetMapping("/allList")
 	public ResponseEntity<List<SurveyVO>> getAllSurvey() {
