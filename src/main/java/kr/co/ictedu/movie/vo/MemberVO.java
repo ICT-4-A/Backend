@@ -1,5 +1,9 @@
 package kr.co.ictedu.movie.vo;
 
+<<<<<<< HEAD
+public class MemberVO {
+
+=======
 import org.apache.ibatis.type.Alias;
 
 import lombok.Getter;
@@ -21,4 +25,5 @@ public class MemberVO {
 	private String password;
 	private String nickname;
 	private String genre;
+>>>>>>> 7cf6747dbc3833d69afed225417c3934dc996512
 }
