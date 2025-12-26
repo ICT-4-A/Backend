@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.ictedu.movie.survey.SurveyDao">
+<select id="maxSurveyNum" resultType="Long">
+   		SELECT MAX(num) FROM survey
+	</select>
+
+ 
+ 	<select id="findBySNUM" parameterType="Long" resultType="surveyresultvo">
+ 		 SELECT s.num AS surveyNum, s.sub AS surveySub, s.code AS surveyCode,
+			s.sdate AS surveyDate, sc.surveytype AS surveytype,
+			sc.subcode AS subCode, sc.surveytitle AS surveytitle,
+			sc.surveycnt AS surveycnt
+		FROM survey s, surveycontent sc WHERE s.num = sc.subcode AND s.num = #{num}
+ 	</select>
+ 	
+ 	<select id="getSurveyList" resultType="surveyvo">
+	    SELECT num, code, sdate, sub
+	    FROM survey
+	    ORDER BY num DESC
+	</select>
+
+	<!--설문 목록 테이블용-->
+ 	<select id="findAllSurveyNums" resultType="long">
+	    SELECT DISTINCT s.num
+    	FROM survey s
+    	ORDER BY s.num DESC
+	</select>
+
+ 
+	 <insert id="saveSurvey" parameterType="surveyvo">
+	 	INSERT INTO survey (num, code, sdate, sub)
+	 	VALUES (survey_seq.NEXTVAL, #{code, jdbcType=INTEGER}, sysdate,
+	 	#{sub, jdbcType=VARCHAR})
+	 </insert>
+	 
+	 <insert id="saveSurveyContentList" parameterType="java.util.List">
+	 	INSERT ALL
+	 	<foreach collection="list" item="item">
+	 		INTO surveycontent (subcode, surveycnt, surveytitle, surveytype)
+	 		VALUES (survey_seq.CURRVAL, #{item.surveycnt}, #{item.surveytitle},
+	 		#{item.surveytype})
+	 	</foreach>
+	 	SELECT * FROM dual
+	 </insert>
+
+	 <update id="incrementSurveyCount">
+	 	update surveycontent set surveycnt = surveycnt + 1 where subcode=#{subcode} and surveytype=#{surveytype}
+	 </update>
+ 
+
+</mapper>
