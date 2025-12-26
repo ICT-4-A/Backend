@@ -24,7 +24,6 @@ public class MovieApplication {
 				.allowedOrigins("http://192.168.0.22:3001", "http://192.168.0.22:3000",
 						"http://localhost:3001", "http://localhost:3000")
 				.allowedOrigins("http://192.168.0.18:3001","http://192.168.0.18:3000","http://localhost:3001","http://localhost:3000")
- develop
 				.allowedHeaders("*")
 				.allowCredentials(true)
 				.allowedMethods("*").maxAge(3600);
