@@ -22,7 +22,7 @@ public class MovieApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				System.out.println("Cros Allow Origin 실행!");
 				registry.addMapping("/**")
-				.allowedOrigins("http://192.168.0.14:3001","http://192.168.0.14:3000","http://localhost:3001","http://localhost:3000")
+				.allowedOrigins("http://192.168.0.18:3001","http://192.168.0.18:3000","http://localhost:3001","http://localhost:3000")
 				.allowedHeaders("*")
 				.allowCredentials(true)
 				.allowedMethods("*").maxAge(3600);
