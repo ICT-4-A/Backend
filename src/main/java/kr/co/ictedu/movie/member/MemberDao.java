@@ -14,5 +14,5 @@ public interface MemberDao {
 	int countByEmail(String email);
 	
 	@Select("select count(*) cnt from member where nickname=#{nickname}") //닉네임 중복검사 쿼리
-	int checkNickname(String email);
+	int checkNickname(String Nickname);
 }

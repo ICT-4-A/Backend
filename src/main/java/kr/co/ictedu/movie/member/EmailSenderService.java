@@ -24,6 +24,7 @@ public class EmailSenderService {
 
 	private String authCode;
 
+	// 닉네임 중복체크 기능 추가하기 
 	// 이메일 중복 체크 - DB에 가입된 이메일 있는 지 없는 지 검색 : 1이면 있음
 	public int duplicateEmail(String email) {
 		int checkEmail = memberDao.countByEmail(email);
