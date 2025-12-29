@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +37,8 @@ public class BoardController {
     }
 
 	@PostMapping("/boardAdd")
-	public ResponseEntity<?> boardAdd(BoardVO vo, HttpServletRequest request){
+	public ResponseEntity<?> boardAdd(@RequestBody BoardVO vo, HttpServletRequest request){
+		vo.setNickname("test111");
 		vo.setReip(request.getRemoteAddr());
 		System.out.println("nickname: " + vo.getNickname());
 		System.out.println("title: " + vo.getTitle());
@@ -118,5 +120,14 @@ public class BoardController {
 	@GetMapping("/commList")
 	public List<BoardCommVO> listBoardComm(@RequestParam("num") int num){
 		return boardCommService.listComment(num);
+	}
+	@PostMapping("/commAdd")
+	public ResponseEntity<?> boardComm(@RequestBody BoardCommVO vo){
+		System.out.println("vo: " + vo.getUcode());
+		System.out.println("vo: " + vo.getUnickname());
+		System.out.println("vo: " + vo.getUcontent());
+		System.out.println("vo: " + vo.getReip());
+		boardCommService.addComment(vo);
+		return ResponseEntity.ok().body(1);
 	}
 }

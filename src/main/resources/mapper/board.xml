@@ -3,12 +3,12 @@
 <mapper namespace="kr.co.ictedu.movie.board.BoardDao">
 	<insert id="add" parameterType="bvo">
 		insert into board
-		values(board_seq.nextVal,#{title},#{nickname},#{content},0,#{reip},sysdate)
+		values(board_seq.nextVal,#{title},#{nickname, jdbcType=VARCHAR},#{content},0,#{reip},sysdate)
 	</insert>
 	
 	<select id="list" resultType="bvo" parameterType="map">
 	SELECT num,title,nickname,content,hit,reip,bdate,row_num FROM(
-	SELECT num,title,nickname,content,hit,reip,bdate, ROW_NUMBER() OVER(ORDER BY num desc) AS row_num FROM BOARD
+	SELECT num,title,nickname,content,hit,reip,bdate, ROW_NUMBER() OVER(ORDER BY num desc) AS row_num FROM board
 	<if test="searchType != null and searchValue != null">
 	<where>
 	<choose>
