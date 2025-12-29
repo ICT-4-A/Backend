@@ -3,15 +3,17 @@ package kr.co.ictedu.movie.survey;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.ictedu.movie.vo.PageVO;
 import kr.co.ictedu.movie.vo.SurveyVO;
 
 @RestController
@@ -68,17 +70,25 @@ public class SurveyController {
 
 	@PostMapping("/updateCount")
 	public ResponseEntity<String> incrementSurveyCount(@RequestBody Map<String, Object> payload) {
-		int subcode = (int) payload.get("subcode");
-		String surveytype = (String) payload.get("surveytype");
 
-		System.out.println("subcode: " + subcode);
-		System.out.println("surveytype: " + surveytype);
+	    System.out.println("payload = " + payload);
+	    Object surveyNumObj = payload.get("surveyNum");
+	    Object surveytypeObj = payload.get("surveytype");
+	    if (surveyNumObj == null || surveytypeObj == null) {
+	        return ResponseEntity.badRequest().body("필수 값 누락");
+	    }
+	    Long surveyNum = Long.valueOf(surveyNumObj.toString());
+	    String surveytype = surveytypeObj.toString();
+	    surveyService.incrementSurveyCount(surveyNum, surveytype);
+	    return ResponseEntity.ok("투표 성공");
+	}
 
-		try {
-			surveyService.incrementSurveyCount(subcode, surveytype);
-			return ResponseEntity.ok("투표 성공");
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
-		}
+	@GetMapping("/listPaged")
+	public ResponseEntity<List<SurveyVO>> getSurveyListPaged(@RequestParam(defaultValue = "1") int page) {
+	    PageVO pageVO = new PageVO();
+	    pageVO.setNowPage(page);
+
+	    List<SurveyVO> list = surveyService.getSurveyListPaged(pageVO);
+	    return ResponseEntity.ok(list);
 	}
 }
