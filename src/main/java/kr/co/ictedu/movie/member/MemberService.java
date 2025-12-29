@@ -13,4 +13,13 @@ public class MemberService {
 	public void create(MemberVO vo) {
 		memberdao.insertMember(vo);
 	}
+	
+	public int checkEmailDuplicate(String email) {
+		return memberdao.countByEmail(email);
+	}
+	
+	public int checkNickname(String Nickname) {
+		return memberdao.checkNickname(Nickname);
+	}
+	
 }

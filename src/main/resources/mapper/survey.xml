@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.ictedu.movie.survey.SurveyDao">
+<select id="maxSurveyNum" resultType="Long">
+   		SELECT MAX(num) FROM survey
+	</select>
+ 
+ 	<select id="findBySNUM" parameterType="Long" resultType="surveyresultvo">
+ 		 SELECT s.num AS surveyNum, s.sub AS surveySub, s.code AS surveyCode,
+			s.sdate AS surveyDate, sc.surveytype AS surveytype,
+			sc.subcode AS subCode, sc.surveytitle AS surveytitle,
+			sc.surveycnt AS surveycnt
+		FROM survey s, surveycontent sc WHERE s.num = sc.subcode AND s.num = #{num}
+ 	</select>
+ 	
+ 	<select id="getSurveyList" resultType="surveyvo">
+	    SELECT num, code, sdate, sub
+	    FROM survey
+	    ORDER BY num DESC
+	</select>
+
+	<!--설문 목록 테이블용 -->
+ 	<select id="findAllSurveyNums" resultType="long">
+	    SELECT DISTINCT s.num
+    	FROM survey s
+    	ORDER BY s.num DESC
+	</select>
+	
+	<!-- 설문 목록 투표 수 카운트 -->
+	<select id="getSurveyListWithVotes" resultType="surveyvo">
+	  SELECT s.num, s.sub, s.code, NVL(SUM(sc.surveycnt), 0) AS totalVotes
+	  FROM survey s
+	  LEFT JOIN surveycontent sc ON s.num = sc.subcode
+	  GROUP BY s.num, s.sub, s.code ORDER BY s.num DESC
+	</select>
+ 
+	<insert id="saveSurvey" parameterType="surveyvo">
+	    INSERT INTO survey (num, code, sdate, sub)
+	    VALUES (survey_seq.NEXTVAL, #{code, jdbcType=INTEGER}, sysdate, #{sub, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="saveSurveyContent" parameterType="surveyContentvo">
+	    INSERT INTO surveycontent (subcode, surveycnt, surveytitle, surveytype)
+	    VALUES (#{subcode}, #{surveycnt}, #{surveytitle}, #{surveytype})
+	</insert>
+
+	 <insert id="saveSurveyContentList" parameterType="java.util.List">
+	 	INSERT ALL
+	 	<foreach collection="list" item="item">
+	 		INTO surveycontent (subcode, surveycnt, surveytitle, surveytype)
+	 		VALUES (survey_seq.CURRVAL, #{item.surveycnt}, #{item.surveytitle},
+	 		#{item.surveytype})
+	 	</foreach>
+	 	SELECT * FROM dual
+	 </insert>
+
+	 <update id="incrementSurveyCount">
+	  	UPDATE surveycontent
+	  	SET surveycnt = surveycnt + 1
+	  	WHERE subcode = #{surveyNum} AND surveytype = #{surveytype}
+	</update>
+
+	<!-- 페이지네이션 -->
+	<select id="listPaged" resultType="kr.co.ictedu.movie.vo.SurveyVO" parameterType="kr.co.ictedu.movie.vo.PageVO">
+	    SELECT * FROM (
+	        SELECT ROWNUM rn, S.* FROM (
+	            SELECT * FROM survey ORDER BY num DESC
+	        ) S
+	    ) WHERE rn BETWEEN #{beginPerPage} AND #{endPerPage}
+	</select>
+ 
+ 
+</mapper>

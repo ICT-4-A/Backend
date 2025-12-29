@@ -13,6 +13,6 @@ public interface MemberDao {
 	@Select("select count(*) from member where email=#{email}")
 	int countByEmail(String email);
 	
-	@Select("select count(*) cnt from member where email=#{email}")
-	int checkEmail(String email);
+	@Select("select count(*) cnt from member where nickname=#{nickname}") //닉네임 중복검사 쿼리
+	int checkNickname(String Nickname);
 }
