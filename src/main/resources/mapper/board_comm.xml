@@ -8,8 +8,9 @@ insert into board_comm values(board_comm_seq.nextVal,#{ucode}, #{unickname},
 #{ucontent}, #{reip}, sysdate)
 </insert>
 <select id="listComment" resultType="bcomm" parameterType="int">
-SELECT num,ucode,unickname,ucontent,reip,uregdate,row_num FROM(
-SELECT num,ucode,unickname,ucontent,reip,uregdate, ROW_NUMBER() 
-OVER(ORDER BY num desc) AS row_num FROM board_comm
+SELECT num, ucode, unickname, ucontent, reip, uregdate
+  FROM board_comm
+  WHERE ucode = #{num}
+  ORDER BY num DESC
 </select>
 </mapper>
