@@ -29,7 +29,7 @@ public class MemberController {
 	}
 	
 	@GetMapping("/nicknameCheck")
-	public int idCheck(@RequestParam("Nickname") String Nickname) {
+	public int idCheck(@RequestParam("nickname") String Nickname) {
 		return memberservice.checkNickname(Nickname);
 	}
 }
