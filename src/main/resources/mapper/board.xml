@@ -26,6 +26,8 @@
 	</if>
 ) numbered_rows WHERE row_num BETWEEN #{begin} AND #{end}
 	</select>
+	
+	
 	<select id="totalCount" resultType="int" parameterType="map">
 		select count(*) cnt from board
 		<if test="searchType != null and searchValue != null">

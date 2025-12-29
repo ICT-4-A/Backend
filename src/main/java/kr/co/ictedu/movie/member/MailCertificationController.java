@@ -14,7 +14,7 @@ import kr.co.ictedu.movie.vo.EmailCountCheckVO;
 @RequestMapping("/api/auth")
 public class MailCertificationController {
 	@Autowired
-	private EmailSenderService emailSenderService;
+	private EmailSenderService emailSenderService;	
 	
 	@Autowired
 	private CertificationNumberRedisDao certificationNumberRedisDao;
