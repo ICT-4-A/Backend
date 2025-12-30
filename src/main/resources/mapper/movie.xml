@@ -1,48 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.ictedu.movie.movie.MovieFormDao">
-<insert id="addMovieform" parameterType="mfvo">
-INSERT INTO MOVIE_FORM VALUES(
-Movie_form_seq.NEXTVAL,#{movie_id},#{writer},#{toge_writer},#{simple_review},
-#{review},#{rate},SYSDATE,SYSDATE,sysdate)
-</insert>
 
-<select id="list" resultType="mfvo" parameterType="map">
-SELECT num,movie_id, writer,toge_writer,simple_review,review,rate,created_at,updated_at,deleted_at,row_num 
-FROM
-(SELECT num,movie_id, writer,toge_writer,simple_review,review,rate,created_at,updated_at,deleted_at,
-ROW_NUMBER() OVER(ORDER BY created_at desc) row_num FROM MOVIE_FORM
-<if test="searchValue != null">
-		<where>
+	<insert id="addMovieform" parameterType="mfvo">
+		INSERT INTO MOVIE_FORM VALUES(
+		Movie_form_seq.NEXTVAL,#{movie_id},#{writer},#{toge_writer},#{simple_review},
+		#{review},#{rate},SYSDATE,SYSDATE,sysdate,#{hit})
+	</insert>
+
+	<select id="list" resultType="mfvo" parameterType="map"> 
+	SELECT num,movie_id,
+		writer,toge_writer,simple_review,review,rate,created_at,updated_at,deleted_at,row_num
+		FROM (SELECT num,movie_id,
+		writer,toge_writer,simple_review,review,rate,created_at,updated_at,deleted_at,
+		ROW_NUMBER() OVER(ORDER BY created_at desc) row_num FROM MOVIE_FORM <if
+			test="searchValue != null">
+			<where>
 				title like '%'||#{searchValue} || '%'
-	</where>
+			</where>
 		</if>
-		) movie_form_rows WHERE row_num BETWEEN #{begin} AND #{end}
-</select>
+		) movie_form_rows WHERE row_num BETWEEN #{begin} AND #{end} </select>
 
 
-	<select id="totalCount" resultType="int" parameterType="map">
-		select count(*) cnt from movie_form
-		<if test="searchValue != null">
-		<where>
+	<select id="totalCount" resultType="int" parameterType="map"> select
+		count(*) cnt from movie_form <if test="searchValue != null">
+			<where>
 				title like '%'|| #{searchValue} || '%'
-	</where>
+			</where>
 		</if>
-		
+
 	</select>
 
 	<update id="hit" parameterType="int">
 		update movie_form set hit=hit+1 where num=#{num}
 	</update>
-	
+
 	<select id="detail" parameterType="int" resultType="mfvo">
 		select * from movie_form where num=#{num}
 	</select>
-	
+
 	<delete id="delete" parameterType="int">
 		delete from movie_form where num=#{num}
 	</delete>
+
+	<select id="search" resultType="mvo" parameterType="map"> 
+		SELECT num,title,DIRECTOR,actor,genre,poster,RELEASE_DATE FROM MOVIE <if
+			test="searchType != null and searchValue != null">
+			<where>
+				<choose>
+					<when test="searchType == 1">
+						title like '%'|| #{searchValue} ||'%'
+					</when>	
+					<when test="searchType == 2">
+						genre like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 3">
+						director like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 4">
+						actor like '%'|| #{searchValue} ||'%'
+					</when>
+				</choose>
+			</where>
+		</if>
+	</select>
 
 </mapper>

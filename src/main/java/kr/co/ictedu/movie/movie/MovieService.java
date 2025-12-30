@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import kr.co.ictedu.movie.vo.BoardVO;
 import kr.co.ictedu.movie.vo.MovieFormVO;
+import kr.co.ictedu.movie.vo.MovieVO;
 
 @Service
 public class MovieService {
@@ -22,6 +23,11 @@ public class MovieService {
 	public List<MovieFormVO> list(Map<String, String> map){
 		return movieformdao.list(map);
 	}
+	
+	public List<MovieVO> search(Map<String, Object> map){
+		return movieformdao.search(map);
+	}
+	
 	
 	void hit(int num) {
 		movieformdao.hit(num);
