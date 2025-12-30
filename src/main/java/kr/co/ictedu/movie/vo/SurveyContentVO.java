@@ -9,7 +9,6 @@ import lombok.Setter;
 @Alias("surveyContentvo")
 public class SurveyContentVO {
 	private Long subcode;
-	private String surveytype;
 	private String surveytitle;
 	private Integer surveycnt;
 }

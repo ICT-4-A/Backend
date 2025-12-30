@@ -11,7 +11,6 @@ import lombok.Setter;
 public class SurveyVO {
     private Long num;
     private String sub;
-    private Integer code;
     private Integer totalVotes;
     private String sdate;
     private List<SurveyContentVO> contents;

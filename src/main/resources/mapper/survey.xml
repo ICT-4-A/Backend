@@ -4,55 +4,64 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.ictedu.movie.survey.SurveyDao">
-<select id="maxSurveyNum" resultType="Long">
+
+	<!-- 가장 최신 설문 번호  -->
+	<select id="maxSurveyNum" resultType="Long">
    		SELECT MAX(num) FROM survey
 	</select>
  
+ 	<!-- 설문 조회 -->
  	<select id="findBySNUM" parameterType="Long" resultType="surveyresultvo">
- 		 SELECT s.num AS surveyNum, s.sub AS surveySub, s.code AS surveyCode,
-			s.sdate AS surveyDate, sc.surveytype AS surveytype,
-			sc.subcode AS subCode, sc.surveytitle AS surveytitle,
-			sc.surveycnt AS surveycnt
-		FROM survey s, surveycontent sc WHERE s.num = sc.subcode AND s.num = #{num}
+ 		SELECT s.num AS surveyNum, s.sub AS surveySub,
+			s.sdate AS surveyDate, sc.subcode AS subCode, 
+			sc.surveytitle AS surveytitle, sc.surveycnt AS surveycnt
+		FROM survey s
+		JOIN surveycontent sc ON s.num = sc.subcode
+        WHERE s.num = #{num}
  	</select>
  	
+ 	<!-- 설문 목록 -->
  	<select id="getSurveyList" resultType="surveyvo">
-	    SELECT num, code, sdate, sub
+	    SELECT num, sdate, sub
 	    FROM survey
 	    ORDER BY num DESC
 	</select>
 
-	<!--설문 목록 테이블용 -->
+	<!--설문 번호 목록 -->
  	<select id="findAllSurveyNums" resultType="long">
 	    SELECT DISTINCT s.num
     	FROM survey s
     	ORDER BY s.num DESC
 	</select>
 	
+	<!-- 전체 투표 수 -->
+	<select id="totalCount" resultType="int">
+	    SELECT COUNT(*) FROM survey
+	</select>
+
+	
 	<!-- 설문 목록 투표 수 카운트 -->
 	<select id="getSurveyListWithVotes" resultType="surveyvo">
-	  SELECT s.num, s.sub, s.code, NVL(SUM(sc.surveycnt), 0) AS totalVotes
+	  SELECT s.num, s.sub, NVL(SUM(sc.surveycnt), 0) AS totalVotes
 	  FROM survey s
 	  LEFT JOIN surveycontent sc ON s.num = sc.subcode
-	  GROUP BY s.num, s.sub, s.code ORDER BY s.num DESC
+	  GROUP BY s.num, s.sub ORDER BY s.num DESC
 	</select>
  
 	<insert id="saveSurvey" parameterType="surveyvo">
-	    INSERT INTO survey (num, code, sdate, sub)
-	    VALUES (survey_seq.NEXTVAL, #{code, jdbcType=INTEGER}, sysdate, #{sub, jdbcType=VARCHAR})
+	    INSERT INTO survey (num, sdate, sub) VALUES (survey_seq.NEXTVAL, sysdate, #{sub})
 	</insert>
 	
 	<insert id="saveSurveyContent" parameterType="surveyContentvo">
-	    INSERT INTO surveycontent (subcode, surveycnt, surveytitle, surveytype)
-	    VALUES (#{subcode}, #{surveycnt}, #{surveytitle}, #{surveytype})
+	    INSERT INTO surveycontent (subcode, surveycnt, surveytitle)
+	    VALUES (#{subcode}, #{surveycnt}, #{surveytitle})
 	</insert>
 
 	 <insert id="saveSurveyContentList" parameterType="java.util.List">
 	 	INSERT ALL
 	 	<foreach collection="list" item="item">
-	 		INTO surveycontent (subcode, surveycnt, surveytitle, surveytype)
-	 		VALUES (survey_seq.CURRVAL, #{item.surveycnt}, #{item.surveytitle},
-	 		#{item.surveytype})
+	 		INTO surveycontent (subcode, surveycnt, surveytitle)
+	 		VALUES (survey_seq.CURRVAL, #{item.surveycnt}, #{item.surveytitle})
 	 	</foreach>
 	 	SELECT * FROM dual
 	 </insert>
@@ -60,7 +69,7 @@
 	 <update id="incrementSurveyCount">
 	  	UPDATE surveycontent
 	  	SET surveycnt = surveycnt + 1
-	  	WHERE subcode = #{surveyNum} AND surveytype = #{surveytype}
+	  	WHERE subcode = #{surveyNum} AND surveytitle = #{surveytitle}
 	</update>
 
 	<!-- 페이지네이션 -->

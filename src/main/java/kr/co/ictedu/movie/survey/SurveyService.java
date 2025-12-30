@@ -24,14 +24,10 @@ public class SurveyService {
 	    surveyDao.saveSurvey(vo);
 	    Long surveyNum = surveyDao.maxSurveyNum();
 
-	    char stype = 'A';
 	    for (SurveyContentVO content : vo.getContents()) {
 	        content.setSubcode(surveyNum);
 	        content.setSurveycnt(0);
-	        content.setSurveytype(String.valueOf(stype));
-
 	        surveyDao.saveSurveyContent(content);
-	        stype++;
 	    }
 	}
 
@@ -48,14 +44,12 @@ public class SurveyService {
 	        SurveyResultVO first = result.get(0);
 	        surveyVO.setNum(first.getSurveyNum());
 	        surveyVO.setSub(first.getSurveySub());
-	        surveyVO.setCode(first.getSurveyCode());
 	        surveyVO.setSdate(first.getSurveyDate());
 
 	        int totalVotes = 0;
 	        
 	        for (SurveyResultVO vo : result) {
 	            SurveyContentVO contentVO = new SurveyContentVO();
-	            contentVO.setSurveytype(vo.getSurveytype());
 	            contentVO.setSurveytitle(vo.getSurveytitle());
 	            contentVO.setSurveycnt(vo.getSurveycnt());
 	            contentVOList.add(contentVO);
@@ -69,35 +63,31 @@ public class SurveyService {
 	    return surveyList;
 	}
 	
-	public SurveyVO findBySNUM(Long num){
-		List<SurveyResultVO> result = surveyDao.findBySNUM(num);
-		if(result == null) {
-			return null;
-		}
-		SurveyVO surveyVO = new SurveyVO();
-		List<SurveyContentVO> contentVOList = new ArrayList<>();
-		
-		SurveyResultVO resultVO = result.get(0);
-		surveyVO.setNum(resultVO.getSurveyNum());
-		surveyVO.setSub(resultVO.getSurveySub());
-		surveyVO.setCode(resultVO.getSurveyCode());
-		surveyVO.setSdate(resultVO.getSurveyDate());
-		
-		for (SurveyResultVO vo : result) {
-			SurveyContentVO contentVO = new SurveyContentVO();
-			contentVO.setSurveytype(vo.getSurveytype());
-			contentVO.setSurveytitle(vo.getSurveytitle());
-			contentVO.setSurveycnt(vo.getSurveycnt());
-			contentVOList.add(contentVO);
-		}
-		surveyVO.setContents(contentVOList);
-		return surveyVO;
+	public SurveyVO findBySNUM(Long num) {
+	    List<SurveyResultVO> rows = surveyDao.findBySNUM(num);
+	    if (rows == null || rows.isEmpty()) return null;
+
+	    SurveyVO vo = new SurveyVO();
+	    vo.setNum(rows.get(0).getSurveyNum());
+	    vo.setSub(rows.get(0).getSurveySub());
+	    vo.setSdate(rows.get(0).getSurveyDate());
+
+	    List<SurveyContentVO> contents = new ArrayList<>();
+	    for (SurveyResultVO r : rows) {
+	        SurveyContentVO c = new SurveyContentVO();
+	        c.setSurveytitle(r.getSurveytitle());
+	        c.setSurveycnt(r.getSurveycnt());
+	        contents.add(c);
+	    }
+	    vo.setContents(contents);
+	    return vo;
 	}
 
-	public void incrementSurveyCount(Long surveyNum, String surveytype) {
-	    surveyDao.incrementSurveyCount(surveyNum, surveytype);
+
+	public void incrementSurveyCount(Long surveyNum, String surveytitle) {
+	    surveyDao.incrementSurveyCount(surveyNum, surveytitle);
 	}
-	
+
 	public List<SurveyVO> getSurveyListPaged(PageVO page) {
 	  
 	    int totalRecord = surveyDao.totalCount(); 
