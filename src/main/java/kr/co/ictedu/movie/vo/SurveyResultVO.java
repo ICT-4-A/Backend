@@ -10,10 +10,8 @@ import lombok.Setter;
 public class SurveyResultVO {
 	private Long surveyNum;
 	private String surveySub;
-	private Integer surveyCode;
 	private String surveyDate;
 	private Long subCode;
-	private String surveytype;
 	private String surveytitle;
 	private Integer surveycnt;
 }

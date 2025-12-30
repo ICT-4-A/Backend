@@ -73,13 +73,13 @@ public class SurveyController {
 
 	    System.out.println("payload = " + payload);
 	    Object surveyNumObj = payload.get("surveyNum");
-	    Object surveytypeObj = payload.get("surveytype");
-	    if (surveyNumObj == null || surveytypeObj == null) {
+	    Object surveyTitleObj = payload.get("surveytitle");
+	    if (surveyNumObj == null || surveyTitleObj  == null) {
 	        return ResponseEntity.badRequest().body("필수 값 누락");
 	    }
 	    Long surveyNum = Long.valueOf(surveyNumObj.toString());
-	    String surveytype = surveytypeObj.toString();
-	    surveyService.incrementSurveyCount(surveyNum, surveytype);
+	    String surveytitle = surveyTitleObj .toString();
+	    surveyService.incrementSurveyCount(surveyNum, surveytitle);
 	    return ResponseEntity.ok("투표 성공");
 	}
 

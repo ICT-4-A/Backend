@@ -13,16 +13,19 @@ public interface SurveyDao {
 
 	List<SurveyVO> getSurveyList();
 	Long maxSurveyNum();
-	List<SurveyResultVO> findBySNUM(Long num);
+	List<SurveyResultVO> findBySNUM(@Param("num") Long num);
+
 	List<Long> findAllSurveyNums(); // 설문 목록 테이블용
 	List<SurveyVO> getSurveyListWithVotes(); // 설문 목록 전체 투표수
-	List<SurveyVO> listPaged(@Param("page") PageVO page);
+	List<SurveyVO> listPaged(PageVO page);
 	int totalCount();
+	
 
 	void saveSurvey(SurveyVO vo);
+	void saveSurveyContentList(List<SurveyContentVO> list);
 	void saveSurveyContent(SurveyContentVO vo);
 	void incrementSurveyCount(
 		    @Param("surveyNum") Long surveyNum,
-		    @Param("surveytype") String surveytype
+		    @Param("surveytitle") String surveytitle
 	);
 }
