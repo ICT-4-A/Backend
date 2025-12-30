@@ -27,6 +27,6 @@ public class MovieVO {
 	private String actor;
 	private String genre;
 	private String poster;
-	private String releaseDate;
-	private String createdAt, updatedAt, deletedAt;
+	private String release_date;
+	private String created_at, updated_at, deleted_at;
 }

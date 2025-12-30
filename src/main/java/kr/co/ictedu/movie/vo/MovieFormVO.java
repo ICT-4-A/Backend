@@ -15,4 +15,5 @@ public class MovieFormVO {
 	private String simple_review, review; // 한줄평, 일반 평가
 	private float rate;
 	private String created_at, updated_at, deleted_at;
+	private int hit;
 }
