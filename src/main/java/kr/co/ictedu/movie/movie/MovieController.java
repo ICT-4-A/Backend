@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.ictedu.movie.vo.BoardVO;
 import kr.co.ictedu.movie.vo.MovieFormVO;
+import kr.co.ictedu.movie.vo.MovieVO;
 import kr.co.ictedu.movie.vo.PageVO;
 
 @RestController
@@ -113,6 +114,20 @@ public class MovieController {
 	@GetMapping("/detail")
 	public MovieFormVO detail(@RequestParam("num") int num) {
 		return movieservice.detail(num);
+	}
+	
+	@GetMapping("/search")
+	public Map<String, Object> search(@RequestParam Map<String, Object> paramMap){
+		Map<String, Object> response = new HashMap<>();
+		Map<String, Object> search = new HashMap<>();
+		search.put("searchType", paramMap.get("searchType"));
+		search.put("searchValue", paramMap.get("searchValue"));
+		
+		List<MovieVO> vo = movieservice.search(search);
+		
+		response.put("success", !vo.isEmpty());
+		response.put("movie", vo);
+		return response;
 	}
 
 }
