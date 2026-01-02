@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import kr.co.ictedu.movie.vo.BoardCommVO;
 import kr.co.ictedu.movie.vo.BoardVO;
+import kr.co.ictedu.movie.vo.MemberVO;
 import kr.co.ictedu.movie.vo.PageVO;
 
 @RestController
@@ -38,7 +40,7 @@ public class BoardController {
 
 	@PostMapping("/boardAdd")
 	public ResponseEntity<?> boardAdd(@RequestBody BoardVO vo, HttpServletRequest request){
-		vo.setNickname("test111");
+		vo.setNickname("test");
 		vo.setReip(request.getRemoteAddr());
 		System.out.println("nickname: " + vo.getNickname());
 		System.out.println("title: " + vo.getTitle());
@@ -123,10 +125,10 @@ public class BoardController {
 	}
 	@PostMapping("/commAdd")
 	public ResponseEntity<?> boardComm(@RequestBody BoardCommVO vo){
-		System.out.println("vo: " + vo.getUcode());
-		System.out.println("vo: " + vo.getUnickname());
-		System.out.println("vo: " + vo.getUcontent());
-		System.out.println("vo: " + vo.getReip());
+		System.out.println("getUcode: " + vo.getUcode());
+		System.out.println("getUnickname: " + vo.getUnickname());
+		System.out.println("getUcontent: " + vo.getUcontent());
+		System.out.println("getReip:" + vo.getReip());
 		boardCommService.addComment(vo);
 		return ResponseEntity.ok().body(1);
 	}

@@ -11,8 +11,8 @@ import jakarta.servlet.http.HttpSession;
 import kr.co.ictedu.movie.vo.LoginLoggerVO;
 import kr.co.ictedu.movie.vo.MemberVO;
 
-@Component
-@Aspect
+//@Component
+//@Aspect
 public class LoginLoginAdvice {
 
 	@Autowired
@@ -32,6 +32,11 @@ public class LoginLoginAdvice {
 				String parsedAgent = UserAgentUtils.parseAgent(userAgent);
 				lvo.setUagent(parsedAgent);
 				System.out.println("로그인 기록 : "+lvo);
+				System.out.println("IDN: " + lvo.getIdn());
+				System.out.println("Agent: " + lvo.getUagent());
+				System.out.println("reip: " + lvo.getReip());
+				System.out.println("status: " + lvo.getStatus());
+				System.out.println("--------------------------------");
 				myLogDao.addLoginLoggin(lvo);
 			}
 		}

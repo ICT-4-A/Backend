@@ -9,8 +9,8 @@
 	INSERT INTO member (member_num, email,PASSWORD,nickname,member_genre) 
 	VALUES (member_seq.NEXTVAL, #{email},#{password},#{nickname},#{genre})
 	</insert>
-	
-	
+
+
 </mapper> 
 
 
