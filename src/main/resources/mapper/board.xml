@@ -3,7 +3,7 @@
 <mapper namespace="kr.co.ictedu.movie.board.BoardDao">
 	<insert id="add" parameterType="bvo">
 		insert into board
-		values(board_seq.nextVal,#{title},#{nickname, jdbcType=VARCHAR},#{content},0,#{reip},sysdate)
+		values(board_seq.nextVal,#{title},#{nickname},#{content},0,#{reip},sysdate)
 	</insert>
 	
 	<select id="list" resultType="bvo" parameterType="map">
