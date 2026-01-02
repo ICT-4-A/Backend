@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.ictedu.movie.gallery.GalleryDao">
+<insert id="add" parameterType="gvo">
+  INSERT INTO gallery (num, title, contents, writer, reip, hit, gdate)
+      VALUES (gallery_seq.NEXTVAL, #{title}, #{contents}, #{writer}, #{reip}, 0, SYSDATE)
+</insert>
+
+<insert id="addImg" parameterType="java.util.List">
+	<selectKey keyProperty="id" resultType="int" order="BEFORE">
+		SELECT gallery_seq.currVal FROM dual
+	</selectKey>
+	<foreach collection="list" item="image" separator=" " open="insert all"
+		close="select * from dual"
+	>
+		INTO galleryimages (galleryid, imagename) VALUES(#{id}, #{image.imagename})
+	</foreach>
+</insert>
+
+	
+	<select id="list" resultType="map" parameterType="map">
+        SELECT g.NUM, g.TITLE, g.WRITER, to_char(g.contents), g.HIT, g.REIP,g.GDATE, g.ROW_NUM, gc.GALLERYID, gc.IMAGENAME FROM
+        (SELECT num, title, writer, contents, hit, reip, gdate,
+        ROW_NUMBER() OVER(ORDER BY num desc) row_num FROM GALLERY
+        <if test="searchType != null and searchValue != null">
+            <where>
+                <choose>
+                    <when test="searchType == 1">
+                        writer LIKE '%'||#{searchValue}||'%'
+                    </when>
+                    <when test="searchType == 2">
+                        title LIKE '%'||#{searchValue}||'%'
+                    </when>
+                    <when test="searchType == 3">
+                        CONTENTS LIKE '%'||#{searchValue}||'%'
+                    </when>
+                </choose>
+            </where>
+        </if>
+        ) g,
+        (SELECT GALLERYID, IMAGENAME FROM (SELECT GALLERYID, IMAGENAME,
+        ROW_NUMBER() OVER(PARTITION BY galleryid ORDER BY imagename desc) RN FROM GALLERYIMAGES)
+        WHERE RN=1) gc WHERE g.num=gc.galleryid AND row_num BETWEEN #{begin} AND #{end} ORDER BY num DESC
+    </select>
+	<select id="totalCount" resultType="int" parameterType="map">
+		SELECT count(*) cnt from gallery
+		<if test="searchType != null and searchValue != null">
+			<where>
+				<choose>
+					<when test="searchType == 1">
+						writer like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 2">
+						title like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 3">
+						content like '%'|| #{searchValue} ||'%'
+					</when>
+				</choose>
+			</where>
+		</if>					
+	</select>
+
+</mapper> 
+
+
+
+
+
+
+
+
