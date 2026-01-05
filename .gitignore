@@ -17,7 +17,7 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 src/main/resources/application.properties
-src/main/java/MovieApplicaion.java
+src/main/java/MovieApplication.java
 
 
 ### IntelliJ IDEA ###
