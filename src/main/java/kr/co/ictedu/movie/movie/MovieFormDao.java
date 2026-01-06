@@ -25,4 +25,5 @@ public interface MovieFormDao {
 
 	void delete(int num);
 
+	List<MovieVO> movielist();
 }

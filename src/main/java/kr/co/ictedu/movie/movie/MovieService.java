@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kr.co.ictedu.movie.vo.BoardVO;
 import kr.co.ictedu.movie.vo.MovieFormVO;
 import kr.co.ictedu.movie.vo.MovieVO;
 
@@ -43,4 +42,7 @@ public class MovieService {
 		movieformdao.delete(num);
 	}
 	
+	public List<MovieVO> movielist(){
+		return movieformdao.movielist();
+	}
 }
