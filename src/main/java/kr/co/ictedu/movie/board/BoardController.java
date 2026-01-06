@@ -40,7 +40,7 @@ public class BoardController {
 
 	@PostMapping("/boardAdd")
 	public ResponseEntity<?> boardAdd(@RequestBody BoardVO vo, HttpServletRequest request){
-		vo.setNickname("test");
+		vo.setNickname("test2");
 		vo.setReip(request.getRemoteAddr());
 		System.out.println("nickname: " + vo.getNickname());
 		System.out.println("title: " + vo.getTitle());

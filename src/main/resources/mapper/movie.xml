@@ -8,36 +8,69 @@
 		#{review},#{rate},SYSDATE,SYSDATE,sysdate,#{hit})
 	</insert>
 
-	<select id="list" resultType="mfvo" parameterType="map"> 
-	SELECT num,movie_id,
-		writer,toge_writer,simple_review,review,rate,created_at,updated_at,deleted_at,row_num
-		FROM (SELECT num,movie_id,
-		writer,toge_writer,simple_review,review,rate,created_at,updated_at,deleted_at,
-		ROW_NUMBER() OVER(ORDER BY created_at desc) row_num FROM MOVIE_FORM <if
-			test="searchValue != null">
-			<where>
-				title like '%'||#{searchValue} || '%'
-			</where>
-		</if>
-		) movie_form_rows WHERE row_num BETWEEN #{begin} AND #{end} </select>
+	<select id="list" resultType="mfvo" parameterType="map">
+    SELECT *
+    FROM (
+        SELECT
+            mf.num,
+            mf.movie_id,
+            mf.writer,
+            mf.toge_writer,
+            mf.simple_review,
+            mf.review,
+            mf.rate,
+            mf.hit,
+            mf.created_at,
+            mf.updated_at,
+            mf.deleted_at,
+
+            m.title,
+            m.poster,
+            m.genre,
+
+            w.nickname  AS writer_name,
+            tw.nickname AS toge_writer_name,
+
+            ROW_NUMBER() OVER (ORDER BY mf.created_at DESC) row_num
+        FROM movie_form mf
+        JOIN movie m ON mf.movie_id = m.num
+        JOIN member w ON mf.writer = w.member_num
+        LEFT JOIN member tw ON mf.toge_writer = tw.member_num
+        <if test="searchValue != null and searchValue != ''">
+            <where>
+                m.title LIKE '%' || #{searchValue} || '%'
+            </where>
+        </if>
+    )
+    WHERE row_num BETWEEN #{begin} AND #{end}
+</select>
 
 
-	<select id="totalCount" resultType="int" parameterType="map"> select
-		count(*) cnt from movie_form <if test="searchValue != null">
-			<where>
-				title like '%'|| #{searchValue} || '%'
-			</where>
-		</if>
-
-	</select>
+	<select id="totalCount" resultType="int" parameterType="map">
+    SELECT COUNT(*)
+    FROM movie_form mf
+    JOIN movie m ON mf.movie_id = m.num
+    <if test="searchValue != null and searchValue != ''">
+        <where>
+            m.title LIKE '%' || #{searchValue} || '%'
+        </where>
+    </if>
+</select>
 
 	<update id="hit" parameterType="int">
 		update movie_form set hit=hit+1 where num=#{num}
 	</update>
 
 	<select id="detail" parameterType="int" resultType="mfvo">
-		select * from movie_form where num=#{num}
-	</select>
+    SELECT
+        mf.*,
+        m.title,
+        m.poster,
+        m.genre
+    FROM movie_form mf
+    JOIN movie m ON mf.movie_id = m.num
+    WHERE mf.num = #{num}
+</select>
 
 	<delete id="delete" parameterType="int">
 		delete from movie_form where num=#{num}

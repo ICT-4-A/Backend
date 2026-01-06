@@ -16,4 +16,9 @@ public class MovieFormVO {
 	private float rate;
 	private int hit;
 	private String created_at, updated_at, deleted_at;
+	private String title;
+	private String poster;
+	private String genre;
+	private String writer_name;
+
 }
