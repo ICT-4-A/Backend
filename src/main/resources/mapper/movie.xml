@@ -82,5 +82,10 @@ WHERE mf.num = #{num}
 			</where>
 		</if>
 	</select>
+	
+	<select id="movielist" resultType="mvo">
+	select num, title, director, actor, genre, poster, release_date from movie
+	order by num desc
+	</select>
 
 </mapper>
