@@ -9,28 +9,12 @@
 	</insert>
 
 	<select id="list" resultType="mfvo" parameterType="map">
-    SELECT *
-    FROM (
-        SELECT
-            mf.num,
-            mf.movie_id,
-            mf.writer,
-            mf.toge_writer,
-            mf.simple_review,
-            mf.review,
-            mf.rate,
-            mf.hit,
-            mf.created_at,
-            mf.updated_at,
-            mf.deleted_at,
-
-            m.title,
-            m.poster,
-            m.genre,
-
+    SELECT * FROM (
+		SELECT mf.num, mf.movie_id, mf.writer, mf.toge_writer, mf.simple_review, mf.review,
+            mf.rate, mf.hit, mf.created_at, mf.updated_at, mf.deleted_at,
+            m.title, m.poster, m.genre,
             w.nickname  AS writer_name,
             tw.nickname AS toge_writer_name,
-
             ROW_NUMBER() OVER (ORDER BY mf.created_at DESC) row_num
         FROM movie_form mf
         JOIN movie m ON mf.movie_id = m.num
@@ -62,14 +46,15 @@
 	</update>
 
 	<select id="detail" parameterType="int" resultType="mfvo">
-    SELECT
-        mf.*,
-        m.title,
-        m.poster,
-        m.genre
-    FROM movie_form mf
-    JOIN movie m ON mf.movie_id = m.num
-    WHERE mf.num = #{num}
+   SELECT mf.num, mf.movie_id, mf.writer, mf.toge_writer, mf.simple_review, mf.review, mf.rate, mf.hit, mf.created_at, mf.updated_at, mf.deleted_at,
+m.title, m.poster, m.genre,
+w.nickname AS writer_name,
+tw.nickname AS toge_writer_name
+FROM MOVIE_FORM mf
+JOIN MOVIE M ON mf.movie_id = m.NUM
+JOIN MEMBER w ON mf.writer = w.member_num
+LEFT JOIN MEMBER tw ON mf.toge_writer = tw.member_num
+WHERE mf.num = #{num}
 </select>
 
 	<delete id="delete" parameterType="int">

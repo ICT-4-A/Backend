@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.ictedu.movie.vo.BoardVO;
+import kr.co.ictedu.movie.vo.MovieCommVO;
 import kr.co.ictedu.movie.vo.MovieFormVO;
 import kr.co.ictedu.movie.vo.MovieVO;
 import kr.co.ictedu.movie.vo.PageVO;
@@ -23,12 +25,18 @@ import kr.co.ictedu.movie.vo.PageVO;
 @RestController
 @RequestMapping("/movie")
 public class MovieController {
+
+    private final MovieCommService movieCommService;
 	
 	@Autowired
 	private MovieService movieservice;
 
 	@Autowired
 	private PageVO pageVO;
+
+    MovieController(MovieCommService movieCommService) {
+        this.movieCommService = movieCommService;
+    }
 	
 	@PostMapping("/movieformadd")
 	public ResponseEntity<?> formAdd(@RequestBody MovieFormVO vo, HttpServletRequest request){
@@ -115,6 +123,7 @@ public class MovieController {
 	public MovieFormVO detail(@RequestParam("num") int num) {
 		return movieservice.detail(num);
 	}
+
 	
 	@GetMapping("/search")
 	public Map<String, Object> search(@RequestParam Map<String, Object> paramMap){
@@ -128,6 +137,18 @@ public class MovieController {
 		response.put("success", !vo.isEmpty());
 		response.put("movie", vo);
 		return response;
+	}
+	@GetMapping("/mcommList")
+	public List<MovieCommVO> listMovieComm(@RequestParam("num") int num){
+		return movieCommService.commentList(num);
+	}
+	@PostMapping("mcommAdd")
+	public ResponseEntity<?> movieComm(@RequestBody MovieCommVO vo){
+		System.out.println("getmovie_form_num: " + vo.getMovie_form_num());
+		System.out.println("getwriter: "+vo.getWriter());
+		System.out.println("getContent: "+vo.getContent());
+		movieCommService.addMcomment(vo);
+		return ResponseEntity.ok().body(1);
 	}
 
 }
