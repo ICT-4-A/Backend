@@ -21,7 +21,7 @@ public class MemberController {
 	// Json 형식으로 보내야 하기 때문에 RequestBody 를 붙여준다
 	public ResponseEntity<?> memberjoin(@RequestBody MemberVO vo){
 		System.out.println("nick:"+vo.getNickname());
-		System.out.println("getGenre:"+vo.getGenre());
+		System.out.println("getGenre:"+vo.getMember_genre());
 		System.out.println("getEmail:"+vo.getEmail());
 		System.out.println("getPassword:"+vo.getPassword());
 		memberservice.create(vo);

@@ -149,7 +149,7 @@ public class MovieController {
 		System.out.println("getContent: "+vo.getContent());
 		movieCommService.addMcomment(vo);
 		return ResponseEntity.ok().body(1);
-	
+	}
 	@GetMapping("/movielist")
 	public Map<String, Object> movielist(){
 		Map<String, Object> response = new HashMap<>();
