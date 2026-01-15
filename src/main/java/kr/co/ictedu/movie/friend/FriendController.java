@@ -36,7 +36,11 @@ public class FriendController {
     // 받은 친구 요청
     @GetMapping("/incoming")
     public List<FriendRequestVO> getIncomingRequests(HttpSession session) {
+    	// 세션에서 로그인한 유저 정보를 가져옴 (loginMember)
         MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            throw new RuntimeException("세션 만료 or 로그인 필요");
+        }
         return friendService.getPendingRequests(loginMember.getNickname());
     }
     
@@ -53,9 +57,18 @@ public class FriendController {
     @GetMapping("/myfriends")
     public List<MemberVO> myFriends(HttpSession session) {
         MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+        
+        // 세션 확인용 로그
+        if (loginMember == null) {
+            System.out.println("loginMember is null!");
+            throw new RuntimeException("세션 만료 or 로그인 필요");
+        } else {
+            System.out.println("로그인 유저: " + loginMember.getNickname());
+        }
+        
         return friendService.getFriends(loginMember.getNickname());
     }
-    
+
     // 내가 보낸 친구 요청 리스트 반환
     @GetMapping("/outgoing")
     public List<FriendRequestVO> getOutgoingRequests(HttpSession session) {
