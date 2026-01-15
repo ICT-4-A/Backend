@@ -103,9 +103,6 @@ public class LoginController {
 		return loginMember;
 	}
 
-	
-	
-	
 	@Autowired
 	MessageUtils messageUtils;
 
@@ -146,7 +143,7 @@ public class LoginController {
 	// Login
 	@PostMapping(value = "passwordlessManageCheck", produces = "application/json;charset=utf8")
 	public Map<String, Object> passwordlessManageCheck(
-			
+
 			@RequestParam(value = "email", required = false) String id,
 			@RequestParam(value = "pw", required = false) String pw, HttpServletRequest request) {
 
@@ -181,23 +178,19 @@ public class LoginController {
 				mapResult.put("result", messageUtils.getMessage("text.passwordless.invalid")); // Invalid id or
 																								// password.
 			}
-			
+
 		} else {
 			mapResult.put("result", messageUtils.getMessage("text.passwordless.empty")); // ID or Password is empty.
 		}
 
-		
 		return mapResult;
 	}
 
-	
-	
 	@RequestMapping(value = "/passwordlessCallApi")
 	public ModelMap passwordlessCallApi(@RequestParam(value = "url", required = false) String url,
 			@RequestParam(value = "params", required = false) String params, HttpServletRequest request,
 			HttpServletResponse response) {
-		
-		
+
 		ModelMap modelMap = new ModelMap();
 		String result = "";
 
@@ -213,8 +206,6 @@ public class LoginController {
 		String userId = "";
 		String userToken = "";
 
-		
-		
 		HttpSession session = request.getSession();
 		String sessionUserToken = (String) session.getAttribute("PasswordlessToken");
 		String sessionTime = (String) session.getAttribute("PasswordlessTime");
@@ -282,6 +273,7 @@ public class LoginController {
 		} else {
 			String random = java.util.UUID.randomUUID().toString();
 			String sessionId = System.currentTimeMillis() + "_sessionId";
+
 			String apiUrl = "";
 			String ip = request.getRemoteAddr();
 
@@ -322,8 +314,8 @@ public class LoginController {
 					}
 
 					result = callApi("POST", restCheckUrl + apiUrl, params);
-					//검수 로그
-					log.info("passwordlessCallApi : result [" + result + "]");  // 이 로그 확인!
+					// 검수 로그
+					log.info("passwordlessCallApi : result [" + result + "]"); // 이 로그 확인!
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -404,11 +396,28 @@ public class LoginController {
 							log.info("passwordlessCallApi : Login Success --> Change Password");
 							String newPw = Long.toString(System.currentTimeMillis()) + ":" + userId;
 							membervo = new MemberVO();
+							
 							membervo.setEmail(userId);
+							log.info(userId);
 							membervo.setPassword(newPw);
 							loginservice.changepw(membervo);
+							log.info(newPw);							
 
-							session.setAttribute("id", userId);
+							
+							Map<String, Object> result1 = loginservice.loginCheck(membervo);
+							System.out.println("result =>" + result1);
+							System.out.println("email: " + membervo.getEmail());
+							System.out.println("password: " + membervo.getPassword());
+							if (result != null && result1.get("CNT") != null) {
+								int cnt = ((Number) result1.get("CNT")).intValue();
+								if (cnt == 1) {
+									membervo.setMember_num(((Number) result1.get("MEMBER_NUM")).intValue());
+									membervo.setNickname(result1.get("NICKNAME").toString());
+									membervo.setMember_genre(result1.get("MEMBER_GENRE").toString());
+									session.setAttribute("loginMember", membervo);
+								}
+							}
+
 						}
 					}
 				} catch (ParseException pe) {
@@ -468,6 +477,7 @@ public class LoginController {
 
 			HttpEntity entity = response.getEntity();
 			retVal = EntityUtils.toString(entity);
+
 		} catch (Exception e) {
 			System.out.println("Rest API call error !!!");
 			System.out.println(e.toString());
@@ -489,12 +499,12 @@ public class LoginController {
 			if (tmpArr.length == 2)
 				value = tmpArr[1];
 
-			 map.put(name, value);
+			map.put(name, value);
 
-		
-	}
+		}
 		return map;
 	}
+
 	private static String getDecryptAES(String encrypted, byte[] key) {
 		String strRet = null;
 
