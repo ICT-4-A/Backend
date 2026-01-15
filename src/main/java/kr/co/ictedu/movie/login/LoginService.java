@@ -40,4 +40,6 @@ public class LoginService {
 		logindao.changepw(userinfo);
 	}
 	
+
+	
 }
