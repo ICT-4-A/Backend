@@ -14,28 +14,37 @@
     <select id="getPending" resultType="frvo">
         SELECT * FROM friend_request WHERE receiver_id = #{receiver_id, jdbcType=VARCHAR} AND status = 'pending'
     </select>
+    
     <update id="updateStatus">
         UPDATE friend_request SET status = #{status} WHERE id = #{id}
     </update>
-    <select id="getFriends" resultType="mem">
-        SELECT m.*
-        FROM friend_request f
-        JOIN member m ON f.requester_id = m.userid
-        WHERE f.receiver_id = #{userid} AND f.status = 'accepted'
-        UNION
-        SELECT m.*
-        FROM friend_request f
-        JOIN member m ON f.receiver_id = m.userid
-        WHERE f.requester_id = #{userid} AND f.status = 'accepted'
-    </select>
+    
+	<select id="getFriends" resultType="mem">
+	    SELECT m.*
+	    FROM friend_request f
+	    JOIN member m ON f.requester_id = m.nickname
+	    WHERE f.receiver_id = #{member_nickname} AND f.status = 'accepted'
+	    UNION
+	    SELECT m.*
+	    FROM friend_request f
+	    JOIN member m ON f.receiver_id = m.nickname
+	    WHERE f.requester_id = #{member_nickname} AND f.status = 'accepted'
+	</select>
+
+    
     <select id="getSentRequests" resultType="frvo">
-        SELECT * FROM friend_request WHERE requester_id = #{userid}
+        SELECT * 
+        FROM friend_request 
+        WHERE requester_id = #{member_nickname}
+        ORDER BY request_date DESC
     </select>
+    
     <!-- 이미 요청이 있는지 확인 해서 count로 돌려줌 -->
     <select id="checkRequestExists" resultType="int">
         SELECT COUNT(*) FROM friend_request WHERE requester_id = #{requester_id}
         AND receiver_id = #{receiver_id}
     </select>
+    
     <!-- 재요청: 상태만 pending으로 되돌리기 위해서 업데이트 해야함. -->
     <update id="resendRequest">
         UPDATE friend_request SET status = 'pending', request_date = SYSDATE

@@ -1,6 +1,8 @@
 package kr.co.ictedu.movie.friend;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kr.co.ictedu.movie.vo.FriendRequestVO;
 import kr.co.ictedu.movie.vo.MemberVO;
@@ -15,19 +17,24 @@ public class FriendService {
     public List<MemberVO> getAllExcept(int member_num) {
         return dao.selectAllExceptMe(member_num);
     }
+    
     public void sendRequest(String from, String to) {
         dao.sendRequest(from, to);
     }
-    public List<FriendRequestVO> getPendingRequests(String member_num) {
-        return dao.getPending(member_num);
+    
+    public List<FriendRequestVO> getPendingRequests(String receiverNickname) {
+        return dao.getPending(receiverNickname);
     }
+    
     public void respond(Long id, String action) {
         dao.updateStatus(id, action.equals("accept") ? "accepted" : "rejected");
     }
-    public List<MemberVO> getFriends(String member_num) {
-        return dao.getFriends(member_num);
+    
+    public List<MemberVO> getFriends(String memberNickname) {
+        return dao.getFriends(memberNickname);
     }
-    public List<FriendRequestVO> getSentRequests(String member_num) {
-        return dao.getSentRequests(member_num);
+    
+    public List<FriendRequestVO> getSentRequests(String memberNickname) {
+        return dao.getSentRequests(memberNickname);
     }
 }
