@@ -1,8 +1,6 @@
 package kr.co.ictedu.movie.friend;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import kr.co.ictedu.movie.vo.FriendRequestVO;
 import kr.co.ictedu.movie.vo.MemberVO;
