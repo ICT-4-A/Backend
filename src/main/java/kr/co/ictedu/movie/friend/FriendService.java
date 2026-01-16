@@ -12,22 +12,32 @@ import org.springframework.stereotype.Service;
 public class FriendService {
     @Autowired
     private FriendRequestDao dao;
-    public List<MemberVO> getAllExcept(int member_num) {
-        return dao.selectAllExceptMe(member_num);
+    
+    public List<MemberVO> getAvailableMembers(int memberNum, String nickname) {
+        return dao.selectAvailableMembers(memberNum, nickname);
     }
+    
     public void sendRequest(String from, String to) {
         dao.sendRequest(from, to);
     }
-    public List<FriendRequestVO> getPendingRequests(String member_num) {
-        return dao.getPending(member_num);
+    
+    public List<FriendRequestVO> getPendingRequests(String receiverNickname) {
+        return dao.getPending(receiverNickname);
     }
-    public void respond(Long id, String action) {
+    
+    public void respond(Long id, String action, String loginNickname) {
+        FriendRequestVO request = dao.getRequestById(id);
+        if (!request.getReceiver_id().equals(loginNickname)) {
+            throw new RuntimeException("권한 없음");
+        }
         dao.updateStatus(id, action.equals("accept") ? "accepted" : "rejected");
     }
-    public List<MemberVO> getFriends(String member_num) {
-        return dao.getFriends(member_num);
+    
+    public List<MemberVO> getFriends(String memberNickname) {
+        return dao.getFriends(memberNickname);
     }
-    public List<FriendRequestVO> getSentRequests(String member_num) {
-        return dao.getSentRequests(member_num);
+    
+    public List<FriendRequestVO> getSentRequests(String memberNickname) {
+        return dao.getSentRequests(memberNickname);
     }
 }

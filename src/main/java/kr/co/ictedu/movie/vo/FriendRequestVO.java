@@ -10,8 +10,8 @@ import lombok.Setter;
 @Alias("frvo")
 public class FriendRequestVO {
 	private int id;
-	private String request_id;
+	private String requester_id;
 	private String receiver_id;
 	private String status;
-	private String request_date;
+	private java.util.Date request_date;
 }
