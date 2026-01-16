@@ -10,8 +10,12 @@ import java.util.List;
 @Mapper
 public interface FriendRequestDao {
 
-    List<MemberVO> selectAllExceptMe(@Param("member_num") int userid);
-    
+	// 친구 신청 가능한 유저 목록 조회
+	List<MemberVO> selectAvailableMembers(
+	    @Param("member_num") int memberNum,
+	    @Param("nickname") String nickname
+	);
+
     // 친구 신청
     void sendRequest(@Param("requester_id") String requesterId,
                      @Param("receiver_id") String receiverId);
@@ -36,4 +40,6 @@ public interface FriendRequestDao {
     void resendRequest(@Param("requester_id") String requesterId,
                        @Param("receiver_id") String receiverId);
 
+	// 요청 ID로 특정 친구 요청 정보를 조회하기 위한 메서드
+    FriendRequestVO getRequestById(@Param("id") Long id);
 }

@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 public class FriendService {
     @Autowired
     private FriendRequestDao dao;
-    public List<MemberVO> getAllExcept(int member_num) {
-        return dao.selectAllExceptMe(member_num);
+    
+    public List<MemberVO> getAvailableMembers(int memberNum, String nickname) {
+        return dao.selectAvailableMembers(memberNum, nickname);
     }
     
     public void sendRequest(String from, String to) {
@@ -24,7 +25,11 @@ public class FriendService {
         return dao.getPending(receiverNickname);
     }
     
-    public void respond(Long id, String action) {
+    public void respond(Long id, String action, String loginNickname) {
+        FriendRequestVO request = dao.getRequestById(id);
+        if (!request.getReceiver_id().equals(loginNickname)) {
+            throw new RuntimeException("권한 없음");
+        }
         dao.updateStatus(id, action.equals("accept") ? "accepted" : "rejected");
     }
     

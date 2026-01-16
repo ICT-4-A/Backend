@@ -2,18 +2,46 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.ictedu.movie.friend.FriendRequestDao">
 
-    <select id="selectAllExceptMe" resultType="mem">
-        SELECT * FROM member WHERE MEMBER_NUM != #{member_num, jdbcType=NUMERIC}
-    </select>
+    <!-- 친구 신청 가능한 유저 목록 조회 (본인 / 이미 친구 / 이미 요청된 관계 제외) -->
+	<select id="selectAvailableMembers" resultType="mem">
+	  SELECT *
+	  FROM member m
+	  WHERE m.member_num != #{member_num}
+	  AND m.nickname NOT IN (
+	    SELECT requester_id
+	    FROM friend_request
+	    WHERE receiver_id = #{nickname}
+	      AND status IN ('pending', 'accepted')
+	
+	    UNION
+	
+	    SELECT receiver_id
+	    FROM friend_request
+	    WHERE requester_id = #{nickname}
+	      AND status IN ('pending', 'accepted')
+	  )
+	</select>
+
 
     <insert id="sendRequest">
         INSERT INTO friend_request (id, requester_id, receiver_id)
         VALUES (friend_request_seq.nextval, #{requester_id, jdbcType=VARCHAR}, #{receiver_id, jdbcType=VARCHAR})
     </insert>
-
-    <select id="getPending" resultType="frvo">
-        SELECT * FROM friend_request WHERE receiver_id = #{receiver_id, jdbcType=VARCHAR} AND status = 'pending'
-    </select>
+    
+	<select id="getPending" resultType="frvo">
+	  SELECT
+	    f.id,
+	    f.requester_id,
+	    f.receiver_id,
+	    f.status,
+	    f.request_date,
+	    m.nickname AS nickname,
+	    m.member_genre AS member_genre
+	  FROM friend_request f
+	  JOIN member m ON f.requester_id = m.nickname
+	  WHERE f.receiver_id = #{receiver_id}
+	  AND f.status = 'pending'
+	</select>
     
     <update id="updateStatus">
         UPDATE friend_request SET status = #{status} WHERE id = #{id}
@@ -30,7 +58,6 @@
 	    JOIN member m ON f.receiver_id = m.nickname
 	    WHERE f.requester_id = #{member_nickname} AND f.status = 'accepted'
 	</select>
-
     
     <select id="getSentRequests" resultType="frvo">
         SELECT * 
@@ -39,6 +66,11 @@
         ORDER BY request_date DESC
     </select>
     
+    <!--요청 ID로 친구 요청 정보를 조회하기 위한 메서드-->
+	<select id="getRequestById" resultType="frvo">
+	    SELECT * FROM friend_request WHERE id = #{id}
+	</select>
+
     <!-- 이미 요청이 있는지 확인 해서 count로 돌려줌 -->
     <select id="checkRequestExists" resultType="int">
         SELECT COUNT(*) FROM friend_request WHERE requester_id = #{requester_id}
@@ -50,7 +82,6 @@
         UPDATE friend_request SET status = 'pending', request_date = SYSDATE
         WHERE requester_id = #{requester_id} AND receiver_id = #{receiver_id}
     </update>
-
 
 
 </mapper>
