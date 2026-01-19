@@ -9,7 +9,7 @@ import kr.co.ictedu.movie.vo.MemberVO;
 
 @Mapper
 public interface LoginDao {
-	@Select("SELECT nickname, COUNT(*) cnt FROM MEMBER WHERE email=#{email} AND PASSWORD = #{password} GROUP BY nickname")
+	@Select("SELECT member_num, nickname FROM member WHERE email = #{email} AND password = #{password}")
 	Map<String, Object> loginCheck(MemberVO vo);
 	
 }

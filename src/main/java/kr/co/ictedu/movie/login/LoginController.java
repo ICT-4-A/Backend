@@ -22,25 +22,49 @@ public class LoginController {
 	@Autowired
 	private LoginService loginservice;
 
+//	@PostMapping("/dologin")
+//	public String doLogin(HttpSession session, HttpServletRequest request,
+//			@RequestHeader("User-Agent") String userAgent, @RequestBody MemberVO vo) {
+//		Map<String, Object> result = loginservice.loginCheck(vo);
+//		System.out.println("result =>" + result);
+//		System.out.println("email: " + vo.getEmail());
+//		System.out.println("login result = " + result);
+//		System.out.println("login num = " + vo.getNum());
+//
+//		System.out.println("password: " + vo.getPassword());
+//		if (result != null && result.get("CNT") != null) {
+//			int cnt = ((Number) result.get("CNT")).intValue();
+//			if (cnt == 1) {
+//				vo.setNum(((Number) result.get("MEMBER_NUM")).intValue());
+//				vo.setNickname(result.get("NICKNAME").toString());
+//				session.setAttribute("loginMember", vo);
+//				return "success";
+//			}
+//		}
+//		return "fail";
+//	}
+
 	@PostMapping("/dologin")
-	public String doLogin(HttpSession session, HttpServletRequest request,
-			@RequestHeader("User-Agent") String userAgent, @RequestBody MemberVO vo) {
-		Map<String, Object> result = loginservice.loginCheck(vo);
-		System.out.println("result =>" + result);
-		System.out.println("email: " + vo.getEmail());
-		System.out.println("password: " + vo.getPassword());
-		if (result != null && result.get("CNT") != null) {
-			int cnt = ((Number) result.get("CNT")).intValue();
-			if (cnt == 1) {
-				vo.setNickname(result.get("NICKNAME").toString());
-				session.setAttribute("loginMember", vo);
-				return "success";
-			}
-		}
-		return "fail";
+	public String doLogin(
+	        HttpSession session,
+	        @RequestBody MemberVO vo
+	) {
+	    Map<String, Object> result = loginservice.loginCheck(vo);
+
+	    System.out.println("login result = " + result);
+
+	    if (result != null) {
+	        vo.setNum(((Number) result.get("MEMBER_NUM")).intValue());
+	        vo.setNickname(result.get("NICKNAME").toString());
+
+	        session.setAttribute("loginMember", vo);
+
+	        System.out.println("login num = " + vo.getNum());
+	        return "success";
+	    }
+
+	    return "fail";
 	}
-
-
 
 	@GetMapping("/dologout")
 	public String doLogout(HttpSession session, HttpServletRequest request,
