@@ -28,6 +28,6 @@ public class DiaryController {
 	    	throw new ResponseStatusException(
 	    			HttpStatus.UNAUTHORIZED, "로그인 필요");
 	    }
-	    return diaryService.getMyDiary(member.getNum());
+	    return diaryService.getMyDiary(member.getMember_num());
 	}
 }

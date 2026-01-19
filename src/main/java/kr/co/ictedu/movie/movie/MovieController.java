@@ -56,7 +56,7 @@ public class MovieController {
 	    }
 	}
 	
-	@RequestMapping("/list")
+	@RequestMapping("/list") //movie_form 의 값을 보여주는 list
 	public Map<String, Object> boardList(@RequestParam Map<String, String> paramMap, HttpServletRequest request){
 		System.out.println("Method => " + request.getMethod());
 		String cPage = paramMap.get("cPage");
@@ -149,6 +149,14 @@ public class MovieController {
 		System.out.println("getContent: "+vo.getContent());
 		movieCommService.addMcomment(vo);
 		return ResponseEntity.ok().body(1);
+	}
+	@GetMapping("/movielist")
+	public Map<String, Object> movielist(){
+		Map<String, Object> response = new HashMap<>();
+		List<MovieVO> movies = movieservice.movielist();
+		response.put("success", true);
+		response.put("movie", movies);
+		return response;
 	}
 
 }
