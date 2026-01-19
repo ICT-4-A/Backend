@@ -61,27 +61,28 @@ import javax.net.ssl.SSLContext;
 @RequestMapping("/api/login")
 public class LoginController {
 	@Autowired
-	   private LoginService loginservice;
+	private LoginService loginservice;
 
-	   @PostMapping("/dologin")
-	   public String doLogin(HttpSession session, HttpServletRequest request,
-	         @RequestHeader("User-Agent") String userAgent, @RequestBody MemberVO vo) {
-	      Map<String, Object> result = loginservice.loginCheck(vo);
-	      System.out.println("result =>" + result);
-	      System.out.println("email: " + vo.getEmail());
-	      System.out.println("password: " + vo.getPassword());
-	      if (result != null && result.get("CNT") != null) {
-	         int cnt = ((Number) result.get("CNT")).intValue();
-	         if (cnt == 1) {
-	            vo.setMember_num(((Number) result.get("MEMBER_NUM")).intValue());
-	            vo.setNickname(result.get("NICKNAME").toString());
-	            vo.setMember_genre(result.get("MEMBER_GENRE").toString());
-	            session.setAttribute("loginMember", vo);
-	            return "success";
-	         }
-	      }
-	      return "fail";
-	   }
+	@PostMapping("/dologin")
+	public String doLogin(HttpSession session, HttpServletRequest request,
+			@RequestHeader("User-Agent") String userAgent, @RequestBody MemberVO vo) {
+		Map<String, Object> result = loginservice.loginCheck(vo);
+		System.out.println("result =>" + result);
+		System.out.println("email: " + vo.getEmail());
+		System.out.println("password: " + vo.getPassword());
+		if (result != null && result.get("CNT") != null) {
+			int cnt = ((Number) result.get("CNT")).intValue();
+			if (cnt == 1) {
+				vo.setMember_num(((Number) result.get("MEMBER_NUM")).intValue());
+				vo.setNickname(result.get("NICKNAME").toString());
+				vo.setMember_genre(result.get("MEMBER_GENRE").toString());
+				session.setAttribute("loginMember", vo);
+				return "success";
+			}
+		}
+		return "fail";
+	}
+
 	@GetMapping("/dologout")
 	public String doLogout(HttpSession session, HttpServletRequest request,
 			@RequestHeader("User-Agent") String userAgent) {

@@ -9,7 +9,6 @@ import kr.co.ictedu.movie.vo.MemberVO;
 
 @Mapper
 public interface LoginDao {
-
 	@Select("SELECT member_num,nickname,member_genre,1 CNT FROM MEMBER WHERE email=#{email} AND PASSWORD = #{password}")
 	Map<String, Object> loginCheck(MemberVO vo);
 	
