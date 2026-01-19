@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.ictedu.movie.diary.DiaryDao">
+<select id="selectMyDiary" parameterType="int" resultType="kr.co.ictedu.movie.vo.DiaryVO">
+SELECT 
+d.simple_review AS simpleReview,
+d.review AS review,
+d.rate AS rate,
+m.nickname AS writerName,
+tm.nickname AS togeWriterName,
+mv.title AS title,
+mv.poster AS poster,
+mv.genre AS genre
+FROM MOVIE_FORM d
+JOIN MEMBER m ON d.writer = m.member_num
+LEFT JOIN MEMBER tm ON d.toge_writer = tm.member_num
+JOIN MOVIE mv ON d.movie_id = mv.num
+WHERE d.writer = #{memberNum}
+ORDER BY d.num DESC
+
+</select>
+</mapper>
