@@ -15,6 +15,8 @@ public interface MovieFormDao {
 
 	List<MovieFormVO> list(Map<String, String> map); // 무비 폼 전체 가져오기
 
+	List<MovieFormVO> listByWriter(String writer); // 로그인한 사용자의 영화 기록
+
 	int totalCount(Map<String, String> map); // 페이징 처리 할 때 쓰기
 
 	void addMovieform(MovieFormVO movieform); // 무비 폼 추가

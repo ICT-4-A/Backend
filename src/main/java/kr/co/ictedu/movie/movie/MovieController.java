@@ -1,5 +1,6 @@
 package kr.co.ictedu.movie.movie;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.mail.Session;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import kr.co.ictedu.movie.vo.BoardVO;
+import kr.co.ictedu.movie.vo.MemberVO;
 import kr.co.ictedu.movie.vo.MovieCommVO;
 import kr.co.ictedu.movie.vo.MovieFormVO;
 import kr.co.ictedu.movie.vo.MovieVO;
@@ -38,46 +42,80 @@ public class MovieController {
         this.movieCommService = movieCommService;
     }
 	
-	@PostMapping("/movieformadd")
-	public ResponseEntity<?> formAdd(@RequestBody MovieFormVO vo, HttpServletRequest request){
-	    System.out.println("writer : "+vo.getWriter());
-	    System.out.println("togeWriter : "+vo.getToge_writer());
-	    System.out.println("simplereview : "+vo.getSimple_review());
-	    
-	    try {
-	        System.out.println("=== 서비스 호출 전 ===");
-	        movieservice.addForm(vo);
-	        System.out.println("=== 서비스 호출 성공 ===");
-	        return ResponseEntity.ok().body("폼 등록 성공");
-	    } catch (Exception e) {
-	        System.out.println("=== 서비스 예외 발생 ===");
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("폼 등록 실패: " + e.getMessage());
-	    }
-	}
+    @PostMapping("/movieformadd")
+    public ResponseEntity<?> formAdd(@RequestBody MovieFormVO vo, HttpServletRequest request){
+        System.out.println("writer : "+vo.getWriter());
+        System.out.println("togeWriter : "+vo.getToge_writer());
+        System.out.println("simplereview : "+vo.getSimple_review());
+
+        // 세션에서 MemberVO 가져오기
+        HttpSession session = request.getSession();
+        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+
+        if (loginMember != null) {
+            vo.setWriter(loginMember.getNickname());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 유저 정보가 없습니다.");
+        }
+
+        try {
+            System.out.println("=== 서비스 호출 전 ===");
+            movieservice.addForm(vo);
+            System.out.println("=== 서비스 호출 성공 ===");
+            return ResponseEntity.ok().body("폼 등록 성공");
+        } catch (Exception e) {
+            System.out.println("=== 서비스 예외 발생 ===");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("폼 등록 실패: " + e.getMessage());
+        }
+    }
 	
-	@RequestMapping("/list") //movie_form 의 값을 보여주는 list
+    @GetMapping("/me")
+    public Map<String, String> me(HttpSession session) {
+        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember"); 
+        Map<String, String> res = new HashMap<>();
+        if (loginMember != null) {
+            res.put("nickname", loginMember.getNickname());
+            res.put("member_num", String.valueOf(loginMember.getMember_num()));
+            res.put("member_genre", loginMember.getMember_genre());
+        }
+        return res;
+    }
+	
+    @GetMapping("/mylist")
+    public Map<String, Object> myMovieList(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+        String nickname = loginMember != null ? loginMember.getNickname() : null;
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (nickname != null) {
+            List<MovieFormVO> list = movieservice.listByWriter(nickname); // 로그인 사용자 기록만 조회
+            response.put("data", list);
+            response.put("success", true);
+        } else {
+            response.put("data", Collections.emptyList());
+            response.put("success", false);
+        }
+        return response;
+    }
+
+    
+	@GetMapping("/list") 
 	public Map<String, Object> boardList(@RequestParam Map<String, String> paramMap, HttpServletRequest request){
 		System.out.println("Method => " + request.getMethod());
 		String cPage = paramMap.get("cPage");
-		System.out.println("searchType: " + paramMap.get("searchType"));
-		System.out.println("searchValue: " + paramMap.get("searchValue"));
-		System.out.println("*******************");
 		
 		int totalCnt = movieservice.totalCount(paramMap);
 		pageVO.setTotalRecord(totalCnt);
-		System.out.println("TotalCount: " + pageVO.getTotalRecord());
-		System.out.println("*******************");
 		
 		int totalPage = (int) Math.ceil(totalCnt/ (double) pageVO.getNumPerPage());
 		pageVO.setTotalPage(totalPage);
-		System.out.println("TotalPage: " + pageVO.getTotalPage());
-		System.out.println("*******************");
 		
 		int totalBlock = (int) Math.ceil(totalPage/ (double) pageVO.getPagePerBlock());
 		pageVO.setTotalBlock(totalBlock);
-		System.out.println("TotalBlock: " + pageVO.getTotalBlock());
-		System.out.println("*******************");
 		
 		if (cPage != null) {
 			pageVO.setNowPage(Integer.parseInt(cPage));
@@ -89,25 +127,19 @@ public class MovieController {
 		
 		pageVO.setBeginPerPage((pageVO.getNowPage() -1) * pageVO.getNumPerPage() +1);
 		pageVO.setEndPerPage(pageVO.getBeginPerPage() + pageVO.getNumPerPage() -1);
-		System.out.println("beginPerPage = " + pageVO.getBeginPerPage());
-		System.out.println("endPerPage = " + pageVO.getEndPerPage());
-		System.out.println("*******************");
 		
 		Map<String, Object> response = new HashMap<>();
 		Map<String, String> map = new HashMap<>(paramMap);
 		map.put("begin", String.valueOf(pageVO.getBeginPerPage()));
 		map.put("end", String.valueOf(pageVO.getEndPerPage()));
 		List<MovieFormVO> list = movieservice.list(map);
-		System.out.println("List Size => " + list.size());
-		
+
 		int startPage = (int)((pageVO.getNowPage() -1) / pageVO.getPagePerBlock()) * pageVO.getPagePerBlock() +1;
 		int endPage = startPage + pageVO.getPagePerBlock() -1;
 		
 		if(endPage > pageVO.getTotalPage()) {
 			endPage = pageVO.getTotalPage();
 		}
-		System.out.println("startPage = " + startPage);
-		System.out.println("endPage = " + endPage);
 		response.put("data", list);
 		
 		response.put("totalItems", pageVO.getTotalRecord());
@@ -123,7 +155,6 @@ public class MovieController {
 	public MovieFormVO detail(@RequestParam("num") int num) {
 		return movieservice.detail(num);
 	}
-
 	
 	@GetMapping("/search")
 	public Map<String, Object> search(@RequestParam Map<String, Object> paramMap){

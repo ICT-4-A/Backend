@@ -3,59 +3,84 @@
 <mapper namespace="kr.co.ictedu.movie.movie.MovieFormDao">
 
 	<insert id="addMovieform" parameterType="mfvo">
-		INSERT INTO MOVIE_FORM VALUES(
-		Movie_form_seq.NEXTVAL,#{movie_id},#{writer},#{toge_writer},#{simple_review},
-		#{review},#{rate},SYSDATE,SYSDATE,sysdate,#{hit})
+	    INSERT INTO MOVIE_FORM (
+	        num, movie_id, writer, toge_writer, simple_review, review, rate,
+	        created_at, updated_at, deleted_at, hit
+	    ) VALUES (
+	        Movie_form_seq.NEXTVAL,
+	        #{movie_id},
+	        #{writer, jdbcType=VARCHAR},
+	        #{toge_writer, jdbcType=VARCHAR},
+	        #{simple_review, jdbcType=VARCHAR},
+	        #{review, jdbcType=VARCHAR},
+	        #{rate, jdbcType=NUMERIC},
+	        SYSDATE, SYSDATE, SYSDATE,
+	        #{hit, jdbcType=NUMERIC}  
+	    )      
 	</insert>
 
 	<select id="list" resultType="mfvo" parameterType="map">
-    SELECT * FROM (
-		SELECT mf.num, mf.movie_id, mf.writer, mf.toge_writer, mf.simple_review, mf.review,
-            mf.rate, mf.hit, mf.created_at, mf.updated_at, mf.deleted_at,
-            m.title, m.poster, m.genre,
-            w.nickname  AS writer_name,
-            tw.nickname AS toge_writer_name,
-            ROW_NUMBER() OVER (ORDER BY mf.created_at DESC) row_num
-        FROM movie_form mf
-        JOIN movie m ON mf.movie_id = m.num
-        JOIN member w ON mf.writer = w.member_num
-        LEFT JOIN member tw ON mf.toge_writer = tw.member_num
-        <if test="searchValue != null and searchValue != ''">
-            <where>
-                m.title LIKE '%' || #{searchValue} || '%'
-            </where>
-        </if>
-    )
-    WHERE row_num BETWEEN #{begin} AND #{end}
-</select>
+	    SELECT * FROM (
+			SELECT mf.num, mf.movie_id, mf.writer, mf.toge_writer, mf.simple_review, mf.review,
+	            mf.rate, mf.hit, mf.created_at, mf.updated_at, mf.deleted_at,
+	            m.title, m.poster, m.genre,
+	            w.nickname  AS writer_name,
+	            tw.nickname AS toge_writer_name,
+	            ROW_NUMBER() OVER (ORDER BY mf.created_at DESC) row_num
+	        FROM movie_form mf
+	        JOIN movie m ON mf.movie_id = m.num
+	        
+	        JOIN member w ON mf.writer = w.nickname
+	        LEFT JOIN member tw ON mf.toge_writer = tw.nickname
+	        <if test="searchValue != null and searchValue != ''">
+	            <where>
+	                m.title LIKE '%' || #{searchValue} || '%'
+	            </where>
+	        </if>
+	    )
+	    WHERE row_num BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<!-- 로그인한 사용자의 영화 기록만 불러오기 -->
+	<select id="listByWriter" resultType="mfvo">
+    SELECT mf.num, mf.movie_id, mf.writer, mf.toge_writer,
+           mf.simple_review, mf.review,
+           mf.rate, mf.hit,
+           mf.created_at, mf.updated_at, mf.deleted_at,
+           m.title, m.poster, m.genre
+      FROM movie_form mf
+      LEFT JOIN movie m ON mf.movie_id = m.num
+     WHERE mf.writer = #{writer}
+     ORDER BY mf.num DESC
+	</select>
 
 
 	<select id="totalCount" resultType="int" parameterType="map">
-    SELECT COUNT(*)
-    FROM movie_form mf
-    JOIN movie m ON mf.movie_id = m.num
-    <if test="searchValue != null and searchValue != ''">
-        <where>
-            m.title LIKE '%' || #{searchValue} || '%'
-        </where>
-    </if>
-</select>
+	    SELECT COUNT(*)
+	    FROM movie_form mf
+	    JOIN movie m ON mf.movie_id = m.num
+	    <if test="searchValue != null and searchValue != ''">
+	        <where>
+	            m.title LIKE '%' || #{searchValue} || '%'
+	        </where>
+	    </if>
+	</select>
 
 	<update id="hit" parameterType="int">
 		update movie_form set hit=hit+1 where num=#{num}
 	</update>
 
 	<select id="detail" parameterType="int" resultType="mfvo">
-   SELECT mf.num, mf.movie_id, mf.writer, mf.toge_writer, mf.simple_review, mf.review, mf.rate, mf.hit, mf.created_at, mf.updated_at, mf.deleted_at,
-m.title, m.poster, m.genre,
-w.nickname AS writer_name,
-tw.nickname AS toge_writer_name
-FROM MOVIE_FORM mf
-JOIN MOVIE M ON mf.movie_id = m.NUM
-JOIN MEMBER w ON mf.writer = w.member_num
-LEFT JOIN MEMBER tw ON mf.toge_writer = tw.member_num
-WHERE mf.num = #{num}
-</select>
+		SELECT mf.num, mf.movie_id, mf.writer, mf.toge_writer, mf.simple_review, mf.review, mf.rate, mf.hit, mf.created_at, mf.updated_at, mf.deleted_at,
+		m.title, m.poster, m.genre,
+		w.nickname AS writer_name,
+		tw.nickname AS toge_writer_name
+		FROM MOVIE_FORM mf
+		JOIN MOVIE M ON mf.movie_id = m.NUM
+		JOIN MEMBER w ON mf.writer = w.nickname
+		LEFT JOIN MEMBER tw ON mf.toge_writer = tw.nickname
+		WHERE mf.num = #{num}
+	</select>
 
 	<delete id="delete" parameterType="int">
 		delete from movie_form where num=#{num}
