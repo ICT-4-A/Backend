@@ -23,6 +23,12 @@ public class MovieService {
 		return movieformdao.list(map);
 	}
 	
+	// 로그인한 사용자의 영화 기록만 불러오기
+	public List<MovieFormVO> listByWriter(String writer) {
+	    return movieformdao.listByWriter(writer); 
+	}
+
+	
 	public List<MovieVO> search(Map<String, Object> map){
 		return movieformdao.search(map);
 	}
