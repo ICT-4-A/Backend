@@ -102,6 +102,11 @@ public class LoginController {
 		}
 		return loginMember;
 	}
+	
+	@GetMapping("/emailcheck")
+	   public int emailcheck(@RequestParam("email") String email) {
+	      return loginservice.emailcheck(email);
+	   }
 
 	@Autowired
 	MessageUtils messageUtils;

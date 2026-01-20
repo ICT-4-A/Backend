@@ -39,10 +39,11 @@ public class BoardController {
     }
 
 	@PostMapping("/boardAdd")
-	public ResponseEntity<?> boardAdd(@RequestBody BoardVO vo, HttpServletRequest request){
-		vo.setNickname("test2");
+	public ResponseEntity<?> boardAdd(@RequestBody BoardVO vo, HttpServletRequest request, HttpSession session){
+		MemberVO member = (MemberVO) session.getAttribute("loginMember");
 		vo.setReip(request.getRemoteAddr());
-		System.out.println("nickname: " + vo.getNickname());
+		vo.setBnickname(member.getNickname());
+		System.out.println("bnickname: " + vo.getBnickname());
 		System.out.println("title: " + vo.getTitle());
 		System.out.println("content: " + vo.getContent());
 		try {

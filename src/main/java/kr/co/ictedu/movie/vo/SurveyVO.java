@@ -14,4 +14,5 @@ public class SurveyVO {
     private Integer totalVotes;
     private String sdate;
     private List<SurveyContentVO> contents;
+    private String snickname;
 }

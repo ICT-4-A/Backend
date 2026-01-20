@@ -45,6 +45,7 @@ public class SurveyService {
 	        surveyVO.setNum(first.getSurveyNum());
 	        surveyVO.setSub(first.getSurveySub());
 	        surveyVO.setSdate(first.getSurveyDate());
+	        
 
 	        int totalVotes = 0;
 	        
