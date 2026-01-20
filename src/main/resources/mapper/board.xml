@@ -3,47 +3,47 @@
 <mapper namespace="kr.co.ictedu.movie.board.BoardDao">
 	<insert id="add" parameterType="bvo">
 		insert into board
-		values(board_seq.nextVal,#{title},#{nickname},#{content},0,#{reip},sysdate)
+		values(board_seq.nextVal,#{title},#{bnickname},#{content},0,#{reip},sysdate) 
 	</insert>
 	
 	<select id="list" resultType="bvo" parameterType="map">
-		SELECT num,title,nickname,content,hit,reip,bdate,row_num FROM(
-		SELECT num,title,nickname,content,hit,reip,bdate, ROW_NUMBER() OVER(ORDER BY num desc) AS row_num FROM board
-		<if test="searchType != null and searchValue != null">
-		<where>
-			<choose>
-				<when test="searchType == 1">
-				nickname like '%'|| #{searchValue} ||'%'
-				</when>
-				<when test="searchType == 2">
-				title like '%'|| #{searchValue} ||'%'
-				</when>
-				<when test="searchType == 3">
-				content like '%'|| #{searchValue} ||'%'
-				</when>
-			</choose>
-		</where>
-		</if>
-	) numbered_rows WHERE row_num BETWEEN #{begin} AND #{end}
+	SELECT num,title,bnickname,content,hit,reip,bdate,row_num FROM(
+	SELECT num,title,bnickname,content,hit,reip,bdate, ROW_NUMBER() OVER(ORDER BY num desc) AS row_num FROM board
+	<if test="searchType != null and searchValue != null">
+	<where>
+	<choose>
+	<when test="searchType == 1">
+	bnickname like '%'|| #{searchValue} ||'%'
+	</when>
+	<when test="searchType == 2">
+	title like '%'|| #{searchValue} ||'%'
+	</when>
+	<when test="searchType == 3">
+	content like '%'|| #{searchValue} ||'%'
+	</when>
+	</choose>
+	</where>
+	</if>
+) numbered_rows WHERE row_num BETWEEN #{begin} AND #{end}
 	</select>
 	
 	
 	<select id="totalCount" resultType="int" parameterType="map">
 		select count(*) cnt from board
 		<if test="searchType != null and searchValue != null">
-			<where>
-				<choose>
-					<when test="searchType == 1">
-						nickname like '%'|| #{searchValue} ||'%'
-					</when>
-					<when test="searchType == 2">
-						title like '%'|| #{searchValue} ||'%'
-					</when>
-					<when test="searchType == 3">
-						content like '%'|| #{searchValue} ||'%'
-					</when>
-				</choose>
-			</where>
+		<where>
+	<choose>
+	<when test="searchType == 1">
+	bnickname like '%'|| #{searchValue} ||'%'
+	</when>
+	<when test="searchType == 2">
+	title like '%'|| #{searchValue} ||'%'
+	</when>
+	<when test="searchType == 3">
+	content like '%'|| #{searchValue} ||'%'
+	</when>
+	</choose>
+	</where>
 		</if>
 	</select>
 	

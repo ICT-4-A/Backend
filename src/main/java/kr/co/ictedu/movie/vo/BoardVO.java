@@ -12,7 +12,7 @@ import lombok.Setter;
 public class BoardVO {
 	private int num;
 	private String title;
-	private String nickname;
+	private String bnickname;
 	private String content;
 	private int hit;
 	private String reip;

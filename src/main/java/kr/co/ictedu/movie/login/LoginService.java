@@ -15,6 +15,12 @@ public class LoginService {
 	public Map<String , Object> loginCheck(MemberVO vo){
 		return logindao.loginCheck(vo);
 	}
+	
+	public int emailcheck(String email){
+	      return logindao.emailCheck(email);
+	   }	
+	
+	//PASSWORDLESS
 
 	public MemberVO checkPassword(MemberVO userinfo) {
 		return logindao.checkPassword(userinfo);

@@ -22,7 +22,7 @@
  	
  	<!-- 설문 목록 -->
  	<select id="getSurveyList" resultType="surveyvo">
-	    SELECT num, sdate, sub
+	    SELECT num, sdate, sub, snickname
 	    FROM survey
 	    ORDER BY num DESC
 	</select>
@@ -49,7 +49,8 @@
 	</select>
  
 	<insert id="saveSurvey" parameterType="surveyvo">
-	    INSERT INTO survey (num, sdate, sub) VALUES (survey_seq.NEXTVAL, sysdate, #{sub})
+	     INSERT INTO survey (num, sdate, sub, snickname) 
+    VALUES (survey_seq.NEXTVAL, sysdate, #{sub}, #{snickname})
 	</insert>
 	
 	<insert id="saveSurveyContent" parameterType="surveyContentvo">

@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import kr.co.ictedu.movie.vo.GalleryImageVO;
 import kr.co.ictedu.movie.vo.GalleryVO;
+import kr.co.ictedu.movie.vo.MemberVO;
 import kr.co.ictedu.movie.vo.PageVO;
 
 @RestController
@@ -42,9 +44,10 @@ public class GalleryController {
 	@PostMapping("/add")
 	public ResponseEntity<?> addGallery(@ModelAttribute GalleryVO galleryVO,
 			@RequestParam("images") MultipartFile[] images,
-			HttpServletRequest request){
+			HttpServletRequest request, HttpSession session){
 		galleryVO.setReip(request.getRemoteAddr());
-		List<GalleryImageVO> imageList = new ArrayList<>();
+		
+		List<GalleryImageVO> imageList = new ArrayList<>();	
 		try {
 			for(MultipartFile file: images) {
 				if(!file.isEmpty()) {
@@ -56,6 +59,8 @@ public class GalleryController {
 					imageList.add(imageVO);
 				}
 			}
+			
+			
 			galleryVO.setGetimlist(imageList);
 			galleryService.transcationProcess(galleryVO, imageList);
 			System.out.println("정상적인 처리");

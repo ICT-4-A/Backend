@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import kr.co.ictedu.movie.vo.MemberVO;
 import kr.co.ictedu.movie.vo.PageVO;
 import kr.co.ictedu.movie.vo.SurveyVO;
 
@@ -24,10 +27,17 @@ public class SurveyController {
 	private SurveyService surveyService;
 
 	@PostMapping("/addsurvey")
-	public ResponseEntity<String> saveSurvey(@RequestBody SurveyVO vo) {
+	public ResponseEntity<String> saveSurvey(@RequestBody SurveyVO vo, HttpSession session, HttpServletRequest request) {
+		
+	    MemberVO member = (MemberVO) session.getAttribute("loginMember");
+	    if (member == null) {
+	        return ResponseEntity.status(401).body("로그인 필요");
+	    }
+		vo.setSnickname(member.getNickname());
 		surveyService.saveSurvey(vo);
 		System.out.println("sub: " + vo.getSub());
 		System.out.println("title: " + vo.getContents().get(0).getSurveytitle());
+		System.out.println("nickname :" + vo.getSnickname());
 		return ResponseEntity.ok("success");
 	}
 
@@ -53,8 +63,24 @@ public class SurveyController {
 	}
 
 	@GetMapping("/list")
-	public ResponseEntity<List<SurveyVO>> getSurveyList() {
-		List<SurveyVO> list = surveyService.getSurveyList();
+	public ResponseEntity<List<SurveyVO>> getSurveyList(HttpSession session) {
+	    List<SurveyVO> list = surveyService.getSurveyList();
+	    
+	    // 로그 추가: 실제 데이터 확인
+	    System.out.println("=== /list API 호출 ===");
+	    if (!list.isEmpty()) {
+	        SurveyVO first = list.get(0);
+	        System.out.println("첫 번째 설문 - snickname: '" + first.getSnickname() + "'");
+	        System.out.println("sub: " + first.getSub());
+	    }
+	    
+	    // null 안전 처리 (DB에 저장된 값이 null인 경우만)
+	    for (SurveyVO vo : list) {
+	        if (vo.getSnickname() == null || vo.getSnickname().trim().isEmpty()) {
+	            vo.setSnickname("익명");  // 또는 "탈퇴회원" 등
+	        }
+	    }
+	    
 	    return ResponseEntity.ok(list);
 	}
 	
