@@ -91,7 +91,18 @@ public class MovieService {
 	public void delete(int num) {
 		movieformdao.delete(num);
 	}
+	
 	public List<MovieVO> movielist(){
 		return movieformdao.movielist();
 	}
+	
+	public MovieVO getMovie(int num) {
+	    return movieformdao.getMovie(num);
+	}
+
+	// 특정 영화(movieId)의 모든 기록 가져오기
+	public List<MovieFormVO> listByMovie(int movieId) {
+	    return movieformdao.listByMovie(movieId);
+	}
+
 }
