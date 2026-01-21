@@ -83,6 +83,7 @@ public class MovieController {
         return res;
     }
 	
+	/* 로그인한 유저 본인의 영화 기록 */
     @GetMapping("/mylist")
     public Map<String, Object> myMovieList(HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -100,6 +101,16 @@ public class MovieController {
             response.put("success", false);
         }
         return response;
+    }
+    
+    /* 로그인한 유저 본인의 영화 기록 장르 필터링 (마이페이지 통계에 사용) */
+    @GetMapping("/genre-stats")
+    public Map<String, Integer> genreStats(HttpSession session) {
+        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            throw new RuntimeException("로그인 필요");
+        }
+        return movieservice.getGenreStats(loginMember.getNickname());
     }
 
     
