@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.mail.Session;
@@ -83,6 +84,7 @@ public class MovieController {
         return res;
     }
 	
+	/* 로그인한 유저 본인의 영화 기록 */
     @GetMapping("/mylist")
     public Map<String, Object> myMovieList(HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -100,6 +102,16 @@ public class MovieController {
             response.put("success", false);
         }
         return response;
+    }
+    
+    /* 로그인한 유저 본인의 영화 기록 장르 필터링 (마이페이지 통계에 사용) */
+    @GetMapping("/genre-stats")
+    public Map<String, Integer> genreStats(HttpSession session) {
+        MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            throw new RuntimeException("로그인 필요");
+        }
+        return movieservice.getGenreStats(loginMember.getNickname());
     }
 
     
@@ -181,6 +193,7 @@ public class MovieController {
 		movieCommService.addMcomment(vo);
 		return ResponseEntity.ok().body(1);
 	}
+	
 	@GetMapping("/movielist")
 	public Map<String, Object> movielist(){
 		Map<String, Object> response = new HashMap<>();
@@ -188,6 +201,27 @@ public class MovieController {
 		response.put("success", true);
 		response.put("movie", movies);
 		return response;
+	}
+	
+	@GetMapping(value = "/movieInfo", produces = "application/json")
+	public ResponseEntity<MovieVO> movieDetail(@RequestParam("num") int num) {
+	    MovieVO movie = movieservice.getMovie(num);
+	    System.out.println("movieDetail 호출: " + movie);
+	    if (movie != null) {
+	        return ResponseEntity.ok(movie);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	    }
+	}
+
+	// 특정 영화(movieId)의 모든 영화 기록 조회
+	@GetMapping("/movieFormsByMovie")
+	public Map<String, Object> getFormsByMovie(@RequestParam("num") int num) {
+	    Map<String, Object> response = new HashMap<>();
+	    List<MovieFormVO> forms = movieservice.listByMovie(num);
+	    response.put("success", !forms.isEmpty());
+	    response.put("forms", forms);
+	    return response;
 	}
 
 }

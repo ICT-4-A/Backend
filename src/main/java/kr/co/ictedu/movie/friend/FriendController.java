@@ -15,7 +15,7 @@ import java.util.Map;
 public class FriendController {
     @Autowired
     private FriendService friendService;
-    //GET => /apxi/friends/members : Login이후에 호출됨 , 쿼리에 따라서 본인은 제외하고 회원 목록
+    //GET => /api/friends/members : Login이후에 호출됨 , 쿼리에 따라서 본인은 제외하고 회원 목록
     
     @GetMapping("/members")
     public List<MemberVO> getAllMembers(HttpSession session) {

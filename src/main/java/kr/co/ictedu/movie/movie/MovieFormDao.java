@@ -28,4 +28,9 @@ public interface MovieFormDao {
 	void delete(int num);
 
 	List<MovieVO> movielist();
+	
+	MovieVO getMovie(int num);
+	
+	List<MovieFormVO> listByMovie(int movieId); // 특정 영화(movieId)의 모든 기록 가져오기
+
 }

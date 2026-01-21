@@ -109,8 +109,26 @@
 	</select>
 	
 	<select id="movielist" resultType="mvo">
-	select num, title, director, actor, genre, poster, release_date from movie
-	order by num desc
+		select num, title, director, actor, genre, poster, release_date from movie
+		order by num desc
 	</select>
+	
+	<select id="getMovie" resultType="mvo" parameterType="int">
+		SELECT num, title, director, actor, genre, poster, release_date
+		FROM movie
+		WHERE num = #{num}
+	</select>
+
+	<!-- 특정 영화 기록 모두 조회 -->
+	<select id="listByMovie" resultType="mfvo" parameterType="int">
+	    SELECT mf.num, mf.movie_id, mf.writer, mf.toge_writer, mf.simple_review, mf.review,
+	           mf.rate, mf.hit, mf.created_at, mf.updated_at, mf.deleted_at,
+	           m.title, m.poster, m.genre
+	      FROM movie_form mf
+	      JOIN movie m ON mf.movie_id = m.num
+	     WHERE mf.movie_id = #{movieId}
+	     ORDER BY mf.created_at DESC
+	</select>
+
 
 </mapper>

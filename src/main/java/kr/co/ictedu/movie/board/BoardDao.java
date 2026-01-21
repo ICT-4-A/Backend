@@ -15,4 +15,5 @@ public interface BoardDao {
 	BoardVO detail(int num);
 	void delete(int num);
 	int totalCount(Map<String, String> map);
+	List<BoardVO> listByWriter(String nickname); 
 }
