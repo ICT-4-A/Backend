@@ -31,4 +31,10 @@ public class BoardService {
 	public void delete(int num) {
 		boardDao.delete(num);
 	}
+
+	// 로그인한 유저가 작성한 게시글만 조회
+	public List<BoardVO> listByWriter(String nickname) {
+	    return boardDao.listByWriter(nickname);
+	}
+
 }

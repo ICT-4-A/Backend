@@ -7,43 +7,43 @@
 	</insert>
 	
 	<select id="list" resultType="bvo" parameterType="map">
-	SELECT num,title,bnickname,content,hit,reip,bdate,row_num FROM(
-	SELECT num,title,bnickname,content,hit,reip,bdate, ROW_NUMBER() OVER(ORDER BY num desc) AS row_num FROM board
-	<if test="searchType != null and searchValue != null">
-	<where>
-	<choose>
-	<when test="searchType == 1">
-	bnickname like '%'|| #{searchValue} ||'%'
-	</when>
-	<when test="searchType == 2">
-	title like '%'|| #{searchValue} ||'%'
-	</when>
-	<when test="searchType == 3">
-	content like '%'|| #{searchValue} ||'%'
-	</when>
-	</choose>
-	</where>
-	</if>
-) numbered_rows WHERE row_num BETWEEN #{begin} AND #{end}
+		SELECT num,title,bnickname,content,hit,reip,bdate,row_num FROM(
+		SELECT num,title,bnickname,content,hit,reip,bdate, ROW_NUMBER() OVER(ORDER BY num desc) AS row_num FROM board
+		<if test="searchType != null and searchValue != null">
+			<where>
+				<choose>
+				<when test="searchType == 1">
+					bnickname like '%'|| #{searchValue} ||'%'
+				</when>
+				<when test="searchType == 2">
+					title like '%'|| #{searchValue} ||'%'
+				</when>
+				<when test="searchType == 3">
+					content like '%'|| #{searchValue} ||'%'
+				</when>
+				</choose>
+			</where>
+		</if>
+		) numbered_rows WHERE row_num BETWEEN #{begin} AND #{end}
 	</select>
 	
 	
 	<select id="totalCount" resultType="int" parameterType="map">
 		select count(*) cnt from board
 		<if test="searchType != null and searchValue != null">
-		<where>
-	<choose>
-	<when test="searchType == 1">
-	bnickname like '%'|| #{searchValue} ||'%'
-	</when>
-	<when test="searchType == 2">
-	title like '%'|| #{searchValue} ||'%'
-	</when>
-	<when test="searchType == 3">
-	content like '%'|| #{searchValue} ||'%'
-	</when>
-	</choose>
-	</where>
+			<where>
+				<choose>
+					<when test="searchType == 1">
+					bnickname like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 2">
+					title like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 3">
+					content like '%'|| #{searchValue} ||'%'
+					</when>
+				</choose>
+			</where>
 		</if>
 	</select>
 	
@@ -58,5 +58,16 @@
 	<delete id="delete" parameterType="int">
 		delete from board where num=#{num}
 	</delete>
+
+	<!-- 로그인한 유저가 작성한 게시글만 조회 (마이페이지용) -->
+	<select id="listByWriter"
+	        parameterType="string"
+	        resultType="bvo">
+	    SELECT num, title, content, bnickname, reip, hit, bdate
+	    FROM board
+	    WHERE bnickname = #{nickname}
+	    ORDER BY num DESC
+	</select>
+
 
 </mapper>

@@ -133,4 +133,15 @@ public class BoardController {
 		boardCommService.addComment(vo);
 		return ResponseEntity.ok().body(1);
 	}
+	
+	// 로그인한 유저가 작성한 게시글만 조회 (마이페이지용)
+	@GetMapping("/mylist")
+	public List<BoardVO> myBoardList(HttpSession session) {
+	    MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+	    if (loginMember == null) {
+	        throw new RuntimeException("로그인 필요");
+	    }
+	    return boardService.listByWriter(loginMember.getNickname());
+	}
+
 }
