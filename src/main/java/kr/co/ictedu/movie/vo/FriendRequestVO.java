@@ -14,4 +14,5 @@ public class FriendRequestVO {
 	private String receiver_id;
 	private String status;
 	private java.util.Date request_date;
+	private String member_genre;
 }

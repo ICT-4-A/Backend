@@ -41,6 +41,7 @@ public class GalleryController {
 	GalleryController(PageVO pageVO){
 		this.pageVO = pageVO;
 	}
+	
 	@PostMapping("/add")
 	public ResponseEntity<?> addGallery(@ModelAttribute GalleryVO galleryVO,
 			@RequestParam("images") MultipartFile[] images,

@@ -74,7 +74,8 @@
 	</update>
 
 	<!-- 페이지네이션 -->
-	<select id="listPaged" resultType="kr.co.ictedu.movie.vo.SurveyVO" parameterType="kr.co.ictedu.movie.vo.PageVO">
+	<select id="listPaged" resultType="kr.co.ictedu.movie.vo.SurveyVO" 
+	parameterType="kr.co.ictedu.movie.vo.PageVO">
 	    SELECT * FROM (
 	        SELECT ROWNUM rn, S.* FROM (
 	            SELECT * FROM survey ORDER BY num DESC
