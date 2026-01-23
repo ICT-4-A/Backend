@@ -11,6 +11,8 @@ import kr.co.ictedu.movie.vo.MovieVO;
 @Mapper
 public interface MovieFormDao {
 
+	void updateMovieAvgRating(MovieVO movie);
+	
 	List<MovieVO> search(Map<String, Object> map);
 
 	List<MovieFormVO> list(Map<String, String> map); // 무비 폼 전체 가져오기

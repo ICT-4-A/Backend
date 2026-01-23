@@ -63,6 +63,11 @@
 			</where>
 		</if>					
 	</select>
+	
+		<update id="hit" parameterType="int">
+		update gallery set hit=hit+1 where num=#{num}
+	</update>
+	
 
 </mapper> 
 

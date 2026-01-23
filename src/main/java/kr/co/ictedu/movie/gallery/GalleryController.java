@@ -46,8 +46,12 @@ public class GalleryController {
 	public ResponseEntity<?> addGallery(@ModelAttribute GalleryVO galleryVO,
 			@RequestParam("images") MultipartFile[] images,
 			HttpServletRequest request, HttpSession session){
+		MemberVO member = (MemberVO)session.getAttribute("loginMember");
+	    if (member == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 필요");
+	    }
+	    galleryVO.setWriter(member.getNickname());
 		galleryVO.setReip(request.getRemoteAddr());
-		
 		List<GalleryImageVO> imageList = new ArrayList<>();	
 		try {
 			for(MultipartFile file: images) {
@@ -63,7 +67,7 @@ public class GalleryController {
 			
 			
 			galleryVO.setGetimlist(imageList);
-			galleryService.transcationProcess(galleryVO, imageList);
+			galleryService.add(galleryVO, imageList);
 			System.out.println("정상적인 처리");
 			return ResponseEntity.ok("갤러리 등록 성공");
 		} catch (Exception e) {
@@ -136,6 +140,7 @@ System.out.println("Method =>" + request.getMethod());
 	response.put("endPage", endPage); 
 	return response;
 	}
+	
 	@GetMapping("/gdetail")
 	public Map<String, Object> detail(@RequestParam("num") int num){
 		return galleryService.detail(num);

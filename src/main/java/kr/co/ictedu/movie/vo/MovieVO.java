@@ -29,4 +29,6 @@ public class MovieVO {
 	private String poster;
 	private String release_date;
 	private String created_at, updated_at, deleted_at;
+	private double avg_rating;
+	
 }

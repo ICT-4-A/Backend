@@ -109,12 +109,12 @@
 	</select>
 	
 	<select id="movielist" resultType="mvo">
-		select num, title, director, actor, genre, poster, release_date from movie
+		select num, title, director, actor, genre, poster, release_date,avg_rating from movie
 		order by num desc
 	</select>
 	
 	<select id="getMovie" resultType="mvo" parameterType="int">
-		SELECT num, title, director, actor, genre, poster, release_date
+		SELECT num, title, director, actor, genre, poster, release_date, avg_rating
 		FROM movie
 		WHERE num = #{num}
 	</select>
@@ -129,6 +129,14 @@
 	     WHERE mf.movie_id = #{movieId}
 	     ORDER BY mf.created_at DESC
 	</select>
+	
+	<!-- ★ 추가: 영화 평균 평점 업데이트 -->
+<update id="updateMovieAvgRating" parameterType="mvo">
+    UPDATE movie 
+    SET avg_rating = #{avg_rating}
+    WHERE num = #{num}
+</update>
+
 
 
 </mapper>

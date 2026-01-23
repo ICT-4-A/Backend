@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.co.ictedu.movie.vo.BoardVO;
 import kr.co.ictedu.movie.vo.GalleryImageVO;
 import kr.co.ictedu.movie.vo.GalleryVO;
 
@@ -19,7 +20,7 @@ public class GalleryService {
 	private GalleryDao galleryDao;
 	
 	@Transactional
-	public void transcationProcess(GalleryVO gvo, List<GalleryImageVO> gvoList) {
+	public void add(GalleryVO gvo, List<GalleryImageVO> gvoList) {
 		galleryDao.add(gvo);
 		galleryDao.addImg(gvoList);
 	}
@@ -30,6 +31,7 @@ public class GalleryService {
 		return galleryDao.totalCount(map);
 	}
 	public Map<String, Object> detail(int num){
+		hit(num);
 		List<Map<String, Object>> rows = galleryDao.detail(num);
 		for (Map.Entry<String, Object> e: rows.get(0).entrySet()) {
 			System.out.println(e.getKey() + ":" + e.getValue());
@@ -39,7 +41,7 @@ public class GalleryService {
 		result.put("num", rows.get(0).get("NUM"));
 		result.put("title", rows.get(0).get("TITLE"));
 		result.put("writer", rows.get(0).get("WRITER"));
-		result.put("contents", rows.get(0).get("CONSTENTS"));
+		result.put("contents", rows.get(0).get("CONTENTS"));
 		result.put("hit", rows.get(0).get("HIT"));
 		result.put("reip", rows.get(0).get("REIP"));
 		result.put("gdate", rows.get(0).get("GDATE"));
@@ -50,5 +52,9 @@ public class GalleryService {
 		}
 		result.put("getimglist", images);
 		return result;
+	}
+	
+	void hit(int num) {
+		galleryDao.hit(num);
 	}
 }
