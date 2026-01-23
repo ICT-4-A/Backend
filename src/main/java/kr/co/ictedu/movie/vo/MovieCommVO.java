@@ -9,9 +9,10 @@ import lombok.Setter;
 @Setter
 @Alias("mcomm")
 public class MovieCommVO {
-	private int comment_num;
-	private int movie_form_num;
-	private String writer;
-	private String content;
-	private String commdate;
+	private int num;
+	private int mcode;
+	private String mnickname;
+	private String mcontent;
+	private String mregdate;
+	private String reip;
 }
