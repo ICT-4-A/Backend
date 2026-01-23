@@ -186,11 +186,15 @@ public class MovieController {
 	public List<MovieCommVO> listMovieComm(@RequestParam("num") int num){
 		return movieCommService.commentList(num);
 	}
+	
 	@PostMapping("mcommAdd")
-	public ResponseEntity<?> movieComm(@RequestBody MovieCommVO vo){
-		System.out.println("getmovie_form_num: " + vo.getMovie_form_num());
-		System.out.println("getwriter: "+vo.getWriter());
-		System.out.println("getContent: "+vo.getContent());
+	public ResponseEntity<?> movieComm(@RequestBody MovieCommVO vo, HttpSession session, HttpServletRequest request){
+		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+		vo.setMnickname(loginMember.getNickname());
+		vo.setReip(request.getRemoteAddr());
+		System.out.println("getmovie_form_num: " + vo.getNum());
+		System.out.println("getwriter: "+vo.getMnickname());
+		System.out.println("getContent: "+vo.getMcontent());
 		movieCommService.addMcomment(vo);
 		return ResponseEntity.ok().body(1);
 	}
