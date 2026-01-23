@@ -18,8 +18,9 @@ public interface GalleryDao {
 	int totalCount(Map<String, String> map);
 	
 	@Select("SELECT g.NUM, g.TITLE, g.WRITER, TO_CHAR(g.CONTENTS) AS CONTENTS,\r\n"
-			+ "g.hit, g.REIP, g.GDATE, gc.GALLERYID, gc.IMAGENAME FROM GALLERY g,\r\n"
-			+ " GALLERYIMAGES gc WHERE g.num =+ gc.GALLERYID AND g.NUM=#{num}")
+			+ "g.hit, g.REIP, TO_CHAR(g.GDATE, 'YYYY-MM-DD HH24:MI:SS') as GDATE, gc.GALLERYID, gc.IMAGENAME FROM GALLERY g,\r\n"
+			+ " GALLERYIMAGES gc WHERE g.num = gc.GALLERYID AND g.NUM=#{num}")
 	List<Map<String, Object>> detail(int num);
 	
+	void hit(int num);
 }

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.ictedu.movie.vo.MovieFormVO;
 import kr.co.ictedu.movie.vo.MovieVO;
@@ -18,8 +19,28 @@ public class MovieService {
 	@Autowired
 	private MovieFormDao movieformdao;
 	
+	@Transactional
 	public void addForm(MovieFormVO vo) {
 		movieformdao.addMovieform(vo);
+		updateMovieAvgRating(vo.getMovie_id());
+	
+	}
+	
+	private void updateMovieAvgRating(int movieId) {
+        List<MovieFormVO> reviews = movieformdao.listByMovie(movieId);
+        if (!reviews.isEmpty()) {
+            float average  = (float) reviews.stream()
+                                      .mapToDouble(MovieFormVO::getRate)
+                                      .average()
+                                      .orElse(0.0f);
+            
+            float avg = (float) (Math.round(average  * 10) / 10.0); 
+            
+            MovieVO movie = new MovieVO();
+            movie.setNum(movieId);
+            movie.setAvg_rating(avg);
+            movieformdao.updateMovieAvgRating(movie);  // ★ 호출
+        }
 	}
 	
 	public List<MovieFormVO> list(Map<String, String> map){
