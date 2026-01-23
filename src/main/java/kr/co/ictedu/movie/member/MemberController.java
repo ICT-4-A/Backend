@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kr.co.ictedu.movie.vo.MemberVO;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 public class MemberController {
 	@Autowired
 	private MemberService memberservice;
@@ -32,4 +32,13 @@ public class MemberController {
 	public int idCheck(@RequestParam("nickname") String Nickname) {
 		return memberservice.checkNickname(Nickname);
 	}
+	
+	// 회원 정보 수정
+	@PostMapping("/update")
+	public ResponseEntity<?> updateMember(@RequestBody MemberVO vo) {
+		System.out.println(vo);
+	    memberservice.update(vo);
+	    return ResponseEntity.ok().build();
+	}
+
 }

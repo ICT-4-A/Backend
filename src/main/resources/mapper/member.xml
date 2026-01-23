@@ -6,12 +6,16 @@
 <mapper namespace="kr.co.ictedu.movie.member.MemberDao">
 
 	<insert id="insertMember" parameterType="mem">
-	INSERT INTO member (member_num, email,PASSWORD,nickname,member_genre) 
-	VALUES (member_seq.NEXTVAL, #{email},#{password},#{nickname},#{genre})
+		INSERT INTO member (member_num, email,PASSWORD,nickname,member_genre) 
+		VALUES (member_seq.NEXTVAL, #{email},#{password},#{nickname},#{member_genre})
 	</insert>
 
-
-
+	<!-- 회원 정보 수정 -->
+	<update id="updateMember" parameterType="mem">
+	    UPDATE member
+	    SET PASSWORD = #{password}, member_genre = #{member_genre}
+	    WHERE member_num = #{member_num}
+	</update>
 
 </mapper> 
 

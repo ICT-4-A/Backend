@@ -2,10 +2,12 @@ package kr.co.ictedu.movie.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.ictedu.movie.vo.MemberVO;
 
 @Service
+@Transactional
 public class MemberService {
 	@Autowired
 	private MemberDao memberdao;
@@ -20,6 +22,11 @@ public class MemberService {
 	
 	public int checkNickname(String Nickname) {
 		return memberdao.checkNickname(Nickname);
-	}
+	}    
+	
+	public void update(MemberVO vo) { //회원 정보 수정
+        memberdao.updateMember(vo); 
+    }
+	
 	
 }
