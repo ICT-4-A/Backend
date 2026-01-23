@@ -94,7 +94,8 @@ public class MovieController {
         Map<String, Object> response = new HashMap<>();
 
         if (nickname != null) {
-            List<MovieFormVO> list = movieservice.listByWriter(nickname); // 로그인 사용자 기록만 조회
+        	// 로그인 사용자 기록만 조회
+            List<MovieFormVO> list = movieservice.listByWriter(nickname); 
             response.put("data", list);
             response.put("success", true);
         } else {

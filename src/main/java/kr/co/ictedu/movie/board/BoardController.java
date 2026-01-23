@@ -64,32 +64,22 @@ public class BoardController {
 		
 		int totalCnt = boardService.totalCount(paramMap);
 		pageVO.setTotalRecord(totalCnt);
-		System.out.println("TotalCount: " + pageVO.getTotalRecord());
-		System.out.println("*******************");
 		
 		int totalPage = (int) Math.ceil(totalCnt/ (double) pageVO.getNumPerPage());
 		pageVO.setTotalPage(totalPage);
-		System.out.println("TotalPage: " + pageVO.getTotalPage());
-		System.out.println("*******************");
 		
 		int totalBlock = (int) Math.ceil(totalPage/ (double) pageVO.getPagePerBlock());
 		pageVO.setTotalBlock(totalBlock);
-		System.out.println("TotalBlock: " + pageVO.getTotalBlock());
-		System.out.println("*******************");
 		
 		if (cPage != null) {
 			pageVO.setNowPage(Integer.parseInt(cPage));
 		} else {
 			pageVO.setNowPage(1);
 		}
-		System.out.println("cPage: " + pageVO.getNowPage());
-		System.out.println("*******************");
 		
 		pageVO.setBeginPerPage((pageVO.getNowPage() -1) * pageVO.getNumPerPage() +1);
 		pageVO.setEndPerPage(pageVO.getBeginPerPage() + pageVO.getNumPerPage() -1);
-		System.out.println("beginPerPage = " + pageVO.getBeginPerPage());
-		System.out.println("endPerPage = " + pageVO.getEndPerPage());
-		System.out.println("*******************");
+
 		
 		Map<String, Object> response = new HashMap<>();
 		Map<String, String> map = new HashMap<>(paramMap);
