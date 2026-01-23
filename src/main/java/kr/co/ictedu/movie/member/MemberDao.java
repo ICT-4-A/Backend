@@ -10,6 +10,8 @@ public interface MemberDao {
 
 	void insertMember(MemberVO vo);
 	
+	void updateMember(MemberVO vo); //회원 정보 수정
+	
 	@Select("select count(*) from member where email=#{email}")
 	int countByEmail(String email);
 	
