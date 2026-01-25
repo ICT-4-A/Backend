@@ -57,4 +57,9 @@ public class GalleryService {
 	void hit(int num) {
 		galleryDao.hit(num);
 	}
+
+	// 로그인한 유저가 작성한 갤러리 조회
+	public List<BoardVO> listByWriter(String nickname) {
+		return galleryDao.listByWriter(nickname);
+	}
 }

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.ictedu.movie.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import kr.co.ictedu.movie.vo.GalleryImageVO;
-import kr.co.ictedu.movie.vo.GalleryVO;
-import kr.co.ictedu.movie.vo.MemberVO;
-import kr.co.ictedu.movie.vo.PageVO;
 
 @RestController
 @RequestMapping("/gallery")
@@ -145,5 +142,19 @@ System.out.println("Method =>" + request.getMethod());
 	public Map<String, Object> detail(@RequestParam("num") int num){
 		return galleryService.detail(num);
 	}
+
+	@GetMapping("/mylist")
+	public List<BoardVO> GalleryList(HttpSession session) {
+		MemberVO loginMember = (MemberVO) session.getAttribute("loginMember");
+		if (loginMember == null) {
+			throw new RuntimeException("로그인 필요");
+
 		}
+		return galleryService.listByWriter(loginMember.getNickname());
+	}
+
+		}
+
+
+
 

@@ -10,7 +10,10 @@ INSERT INTO movie_form_comm VALUES(movie_form_comm_seq.NEXTVAL, #{mnickname}, #{
 
 <select id="commentList" resultType="mcomm" parameterType="int">
 
-SELECT num, mcontent, mregdate, mnickname,reip FROM movie_form_comm ORDER BY mregdate DESC
+    SELECT num, mcontent, mregdate, mnickname, reip
+    FROM movie_form_comm
+    WHERE mcode = #{num}
+    ORDER BY mregdate DESC
 </select>
 </mapper> 
 

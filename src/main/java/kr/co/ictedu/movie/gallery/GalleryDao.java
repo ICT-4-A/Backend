@@ -3,6 +3,7 @@ package kr.co.ictedu.movie.gallery;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.ictedu.movie.vo.BoardVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -23,4 +24,7 @@ public interface GalleryDao {
 	List<Map<String, Object>> detail(int num);
 	
 	void hit(int num);
+
+	List<BoardVO> listByWriter(String nickname);
+
 }
