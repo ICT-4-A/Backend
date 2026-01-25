@@ -67,7 +67,15 @@
 		<update id="hit" parameterType="int">
 		update gallery set hit=hit+1 where num=#{num}
 	</update>
-	
+
+	<select id="listByWriter"
+			parameterType="string"
+			resultType="gvo">
+		SELECT num, title, contents, writer, reip, hit, gdate
+		FROM gallery
+		WHERE writer = #{writer}
+		ORDER BY num DESC
+	</select>
 
 </mapper> 
 
